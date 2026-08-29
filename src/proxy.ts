@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Define protected and admin routes here to establish the foundation
 const protectedRoutes = [
   '/cart', 
   '/checkout', 
@@ -16,8 +15,6 @@ const authRoutes = ['/login', '/register'];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Retrieve token from cookies
   const token = request.cookies.get('cartify_access_token')?.value;
 
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
@@ -34,21 +31,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/profile', request.url));
   }
 
-  // NOTE: This is just a basic UX route protection.
-  // Real security and role-based authorization (e.g. for /admin) MUST be enforced by the backend API.
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder files
-     */
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
   ],
 };
