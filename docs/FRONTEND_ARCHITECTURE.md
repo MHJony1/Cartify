@@ -64,3 +64,34 @@ Use `"use client"` only at the leaves of the component tree, when necessary for 
 - **Admin vs Customer**: Never mix admin-specific business logic or UI directly inside customer components. Maintain strict separation.
 - **Do Not Over-Engineer**: Avoid unnecessary abstractions, nested repositories, or duplicate validation layers. Trust the backend for authorization.
 - **Secret Management**: Never expose backend keys or secrets in the client codebase. Ensure all public vars are prefixed with `NEXT_PUBLIC_`.
+
+## 5. Foundations Implemented in Phase 1
+
+### Authentication Architecture
+- Backend is the final authority for authentication and authorization.
+- The `src/features/auth/` folder contains API functions, React Query hooks, and types for authentication.
+- Auth tokens should be stored securely (preferably HTTP-only cookies managed by the backend). Do NOT expose JWT secrets to the client.
+
+### Route Protection Principles
+- Handled primarily by Next.js middleware (`src/middleware.ts`) which checks for the presence of an authentication token.
+- This is purely a UX routing layer; backend APIs must independently enforce real authorization.
+- Unauthorized users on protected routes (`/cart`, `/profile`, `/admin`, etc.) are redirected to `/login`.
+- Authenticated users on auth routes (`/login`, `/register`) are redirected to `/profile`.
+
+### Global UI Architecture
+- Reusable UI components (like `Container`, `ErrorState`, `LoadingState`, `EmptyState`) are placed in `src/components/shared/`.
+- Layout components like `MainLayout` reside in `src/components/layout/`.
+- Generic Shadcn/UI building blocks belong in `src/components/ui/`.
+- Global Toast provider (`react-toastify`) is used for application-wide feedback.
+
+### Provider Architecture
+- `src/providers/AppProviders.tsx` acts as the root wrapper inside `src/app/layout.tsx`.
+- It composes `QueryProvider` (TanStack Query) and `ToastProvider`. We keep nested context providers minimal.
+
+### Error and Loading Architecture
+- Global states are established using Next.js conventions: `src/app/loading.tsx`, `src/app/error.tsx`, and `src/app/not-found.tsx`.
+- A centralized Axios interceptor converts all API failures to a unified `ApiError` format (managed in `src/lib/api/errors.ts`).
+
+### Server vs Client Component Rules
+- Default strictly to Server Components.
+- Use `"use client"` only for React state, React context providers (e.g., `ToastProvider`), Zustand stores, TanStack query clients, and components requiring browser APIs or event handlers.

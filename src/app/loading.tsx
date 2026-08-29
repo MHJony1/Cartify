@@ -1,1 +1,5 @@
-export default function Component() { return null; }
+import { LoadingState } from '@/components/shared/LoadingState';
+
+export default function Loading() {
+  return <LoadingState fullScreen message="Loading Cartify..." />;
+}
