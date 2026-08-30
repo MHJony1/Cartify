@@ -1,52 +1,58 @@
-import React from 'react';
-import { ProductCard } from '@/features/products/components/ProductCard';
+"use client";
 
-const MOCK_BEST_SELLERS = [
-  {
-    id: 'bs_1',
-    name: 'Ergonomic Office Chair',
-    price: 15500,
-    originalPrice: 18000,
-    rating: 4.8,
-    reviewCount: 432,
-    image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=400&auto=format&fit=crop',
-    badge: 'Top Rated',
-  },
-  {
-    id: 'bs_2',
-    name: 'Mechanical Keyboard',
-    price: 8500,
-    rating: 4.9,
-    reviewCount: 890,
-    image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=400&auto=format&fit=crop',
-  },
-  {
-    id: 'bs_3',
-    name: 'Noise-Cancelling Earbuds',
-    price: 12000,
-    rating: 4.7,
-    reviewCount: 215,
-    image: 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=400&auto=format&fit=crop',
-  },
-];
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { productsApi } from '@/features/products/api/products.api';
+import { ProductCard } from '@/features/products/components/ProductCard';
+import { Button } from '@/components/ui/button';
 
 export function BestSellersSection() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Fetching a different set (e.g. sorted by price or just standard limit) to represent "Trending"
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['trending-products'],
+    queryFn: () => productsApi.getProducts({ limit: 4 }), // Without specific trending backend, we just get top 4 default sort
+  });
+
   return (
-    <section className="py-16">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 flex items-end justify-between">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Trending Now</h2>
-            <p className="mt-2 text-muted-foreground">What everyone is buying right now</p>
-          </div>
+        <div className="flex flex-col items-center mb-12 text-center">
+          <h2 className="text-3xl font-black tracking-tighter uppercase">Trending Now</h2>
+          <div className="h-px w-12 bg-foreground mt-6"></div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {MOCK_BEST_SELLERS.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
+        {isLoading || !mounted ? (
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className="aspect-[3/4] w-full animate-pulse bg-muted" />
+            ))}
+          </div>
+        ) : isError ? (
+          <div className="text-center py-10 text-muted-foreground">Unable to load trending products at this time.</div>
+        ) : (
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {data?.data.map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                slug={product.slug}
+                price={product.price}
+                images={product.images}
+                variants={product.variants}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
+

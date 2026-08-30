@@ -1,44 +1,47 @@
 import React from 'react';
 import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-muted/30 pt-16 md:pt-24 lg:pt-32">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
-          <div className="max-w-2xl text-center lg:text-left">
-            <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Elevate Your Everyday Essentials.
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              Discover a curated collection of premium products designed to enhance your lifestyle. Quality craftsmanship meets modern design.
-            </p>
+    <section className="relative w-full h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden bg-background">
+      {/* Cloudinary-ready configuration placeholder via high-res Unsplash */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ 
+          backgroundImage: 'url(https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2000&auto=format&fit=crop)',
+          backgroundPosition: '50% 30%' 
+        }}
+      />
+      
+      {/* Subtle overlay for text readability without darkening too much */}
+      <div className="absolute inset-0 bg-black/20" />
+      
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+        <p className="text-sm md:text-base font-semibold tracking-[0.2em] text-white/90 uppercase mb-4 drop-shadow-sm">
+          Autumn / Winter Collection
+        </p>
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white uppercase max-w-5xl drop-shadow-lg leading-[0.95]">
+          Modern Essentials.
+        </h1>
+        <p className="mt-6 text-lg md:text-xl text-white/90 max-w-2xl drop-shadow-md">
+          Discover a curated collection of premium apparel designed to elevate your everyday wardrobe. Minimalist design, uncompromising quality.
+        </p>
 
-            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
-              <Link href="/shop" className={buttonVariants({ size: "lg", className: "w-full sm:w-auto h-14 px-8 text-base" })}>
-                Shop Collection
-              </Link>
-              <Link href="/categories" className={buttonVariants({ size: "lg", variant: "outline", className: "w-full sm:w-auto h-14 px-8 text-base bg-transparent" })}>
-                Explore Categories
-              </Link>
-            </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
-            <div className="relative aspect-square w-full rounded-2xl bg-muted/50 overflow-hidden shadow-2xl">
-              {/* High-quality placeholder image representing premium products */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center" 
-                style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1000&auto=format&fit=crop)' }}
-              />
-            </div>
-          </div>
+        <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <Link href="/categories/new-arrivals" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full h-14 px-10 rounded-none bg-white text-black hover:bg-white/90 text-sm font-semibold tracking-widest uppercase transition-colors">
+              Shop New Arrivals
+            </Button>
+          </Link>
+          <Link href="/categories/women" className="w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="w-full h-14 px-10 rounded-none bg-transparent border-white text-white hover:bg-white hover:text-black text-sm font-semibold tracking-widest uppercase transition-colors">
+              Explore Collection
+            </Button>
+          </Link>
         </div>
       </div>
-      
-      {/* Decorative subtle gradient background */}
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }
+

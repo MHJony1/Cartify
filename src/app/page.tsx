@@ -3,10 +3,10 @@ import {
   HeroSection,
   CategoryShowcase,
   FeaturedProductsSection,
+  EditorialSection,
   PromoSection,
   BestSellersSection,
   BenefitsSection,
-  TestimonialsSection,
   NewsletterSection,
 } from '@/features/home';
 
@@ -16,10 +16,10 @@ export default function Home() {
       <HeroSection />
       <CategoryShowcase />
       <FeaturedProductsSection />
+      <EditorialSection />
       <PromoSection />
       <BestSellersSection />
       <BenefitsSection />
-      <TestimonialsSection />
       <NewsletterSection />
     </StorefrontLayout>
   );

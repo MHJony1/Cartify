@@ -1,32 +1,38 @@
 import React from 'react';
 import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 
 export function PromoSection() {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-multiply" />
+        <div className="relative overflow-hidden bg-muted h-[400px] md:h-[500px] flex items-center justify-center">
+          <div 
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
+            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1600&auto=format&fit=crop)' }}
+          />
+          <div className="absolute inset-0 bg-black/20" />
           
-          <div className="relative z-10 flex flex-col items-center p-12 text-center md:p-20">
-            <h2 className="text-3xl font-black tracking-tight sm:text-5xl">
-              Upgrade Your Workspace
+          <div className="relative z-10 flex flex-col items-center p-8 text-center max-w-2xl">
+            <p className="text-xs font-semibold tracking-[0.2em] text-white uppercase mb-4">
+              The Summer Edit
+            </p>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-white uppercase mb-6 drop-shadow-md">
+              Breeze Through The Season
             </h2>
-            <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90">
-              Discover our new collection of ergonomic furniture and premium accessories designed to boost your productivity.
+            <p className="text-base text-white/90 mb-8 drop-shadow-sm">
+              Discover lightweight linens and breathable cottons designed for the warmest days.
             </p>
 
-
-            <div className="mt-8 flex gap-4">
-              <Link href="/shop?category=workspace" className={buttonVariants({ size: "lg", variant: "secondary" })}>
-                Shop Workspace
-              </Link>
-            </div>
+            <Link href="/categories/women">
+              <Button size="lg" className="rounded-none bg-white text-black hover:bg-white/90 uppercase tracking-widest font-semibold px-8 h-12">
+                Discover More
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
     </section>
   );
 }
+

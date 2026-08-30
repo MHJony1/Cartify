@@ -16,80 +16,80 @@ import { Product } from '@/features/products/types';
 const MEGA_MENU = [
   {
     name: 'Men',
-    href: '/categories/men',
+    href: '/shop?gender=Men',
     columns: [
       {
         title: 'Clothing',
         links: [
-          { name: 'T-Shirts', href: '/categories/men-tshirts' },
-          { name: 'Shirts', href: '/categories/men-shirts' },
-          { name: 'Pants', href: '/categories/men-pants' },
-          { name: 'Jackets', href: '/categories/men-jackets' },
+          { name: 'T-Shirts', href: '/shop?gender=Men&search=T-Shirts' },
+          { name: 'Shirts', href: '/shop?gender=Men&search=Shirts' },
+          { name: 'Pants', href: '/shop?gender=Men&search=Pants' },
+          { name: 'Jackets', href: '/shop?gender=Men&search=Jackets' },
         ]
       },
       {
         title: 'Accessories',
         links: [
-          { name: 'Watches', href: '/categories/men-watches' },
-          { name: 'Belts', href: '/categories/men-belts' },
-          { name: 'Wallets', href: '/categories/men-wallets' },
+          { name: 'Watches', href: '/shop?gender=Men&search=Watches' },
+          { name: 'Belts', href: '/shop?gender=Men&search=Belts' },
+          { name: 'Wallets', href: '/shop?gender=Men&search=Wallets' },
         ]
       }
     ]
   },
   {
     name: 'Women',
-    href: '/categories/women',
+    href: '/shop?gender=Women',
     columns: [
       {
         title: 'Clothing',
         links: [
-          { name: 'Dresses', href: '/categories/women-dresses' },
-          { name: 'Tops', href: '/categories/women-tops' },
-          { name: 'Pants', href: '/categories/women-pants' },
-          { name: 'Jackets', href: '/categories/women-jackets' },
+          { name: 'Dresses', href: '/shop?gender=Women&search=Dresses' },
+          { name: 'Tops', href: '/shop?gender=Women&search=Tops' },
+          { name: 'Pants', href: '/shop?gender=Women&search=Pants' },
+          { name: 'Jackets', href: '/shop?gender=Women&search=Jackets' },
         ]
       },
       {
         title: 'Accessories',
         links: [
-          { name: 'Bags', href: '/categories/women-bags' },
-          { name: 'Jewelry', href: '/categories/women-jewelry' },
+          { name: 'Bags', href: '/shop?gender=Women&search=Bags' },
+          { name: 'Jewelry', href: '/shop?gender=Women&search=Jewelry' },
         ]
       }
     ]
   },
   {
     name: 'Kids',
-    href: '/categories/kids',
+    href: '/shop?gender=Unisex',
     columns: [
       {
         title: 'Boys',
         links: [
-          { name: 'Clothing', href: '/categories/boys-clothing' },
-          { name: 'Shoes', href: '/categories/boys-shoes' },
+          { name: 'Clothing', href: '/shop?gender=Unisex&search=Boys+Clothing' },
+          { name: 'Shoes', href: '/shop?gender=Unisex&search=Boys+Shoes' },
         ]
       },
       {
         title: 'Girls',
         links: [
-          { name: 'Clothing', href: '/categories/girls-clothing' },
-          { name: 'Shoes', href: '/categories/girls-shoes' },
+          { name: 'Clothing', href: '/shop?gender=Unisex&search=Girls+Clothing' },
+          { name: 'Shoes', href: '/shop?gender=Unisex&search=Girls+Shoes' },
         ]
       }
     ]
   },
   {
     name: 'Accessories',
-    href: '/categories/accessories',
+    href: '/shop?search=Accessories',
     columns: [
       {
         title: 'All Accessories',
         links: [
-          { name: 'Bags & Backpacks', href: '/categories/bags' },
-          { name: 'Watches', href: '/categories/watches' },
-          { name: 'Sunglasses', href: '/categories/sunglasses' },
-          { name: 'Hats', href: '/categories/hats' },
+          { name: 'Bags & Backpacks', href: '/shop?search=Bags' },
+          { name: 'Watches', href: '/shop?search=Watches' },
+          { name: 'Sunglasses', href: '/shop?search=Sunglasses' },
+          { name: 'Hats', href: '/shop?search=Hats' },
         ]
       }
     ]
@@ -97,8 +97,8 @@ const MEGA_MENU = [
 ];
 
 const SIMPLE_LINKS = [
-  { name: 'New Arrivals', href: '/categories/new-arrivals' },
-  { name: 'Sale', href: '/categories/sale', className: 'text-destructive' },
+  { name: 'New Arrivals', href: '/shop?sort=createdAt-desc' },
+  { name: 'Sale', href: '/shop?search=Sale', className: 'text-destructive' },
 ];
 
 export function Navbar() {
@@ -237,42 +237,48 @@ export function Navbar() {
                   </Link>
                   
                   {/* Dropdown Panel */}
-                  <div className="absolute top-full left-0 w-full bg-background border-b border-border shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="container mx-auto px-8 py-10 flex gap-20">
-                      {cat.columns.map((col, idx) => (
-                        <div key={idx} className="flex flex-col gap-4">
-                          <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground">{col.title}</h4>
-                          <ul className="flex flex-col gap-3">
-                            {col.links.map((link, linkIdx) => (
-                              <li key={linkIdx}>
-                                <Link 
-                                  href={link.href} 
-                                  className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center group/link"
-                                >
-                                  <span className="transform -translate-x-2 opacity-0 group-hover/link:translate-x-0 group-hover/link:opacity-100 transition-all duration-200">
-                                    <ChevronRight className="h-3 w-3 mr-1" />
-                                  </span>
-                                  {link.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                  <div className="absolute top-full left-0 w-full bg-background border-b border-border shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out z-50">
+                    <div className="container mx-auto px-4 lg:px-8 py-8 flex justify-between">
+                      {/* Left: Link Columns */}
+                      <div className="flex gap-16 lg:gap-24">
+                        {cat.columns.map((col, idx) => (
+                          <div key={idx} className="flex flex-col min-w-[120px]">
+                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4">{col.title}</h4>
+                            <ul className="flex flex-col gap-3">
+                              {col.links.map((link, linkIdx) => (
+                                <li key={linkIdx}>
+                                  <Link 
+                                    href={link.href} 
+                                    className="text-sm font-medium text-foreground/80 hover:text-foreground hover:translate-x-1 inline-block transition-all duration-200"
+                                  >
+                                    {link.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
                       
-                      {/* Optional Highlight/Promo block inside Mega Menu */}
-                      <div className="ml-auto w-1/3 bg-muted/30 p-6 flex flex-col justify-end">
-                        <div className="aspect-[16/9] bg-muted mb-4 overflow-hidden relative group/promo">
-                           <div className="absolute inset-0 bg-black/10 group-hover/promo:bg-black/20 transition-colors z-10" />
-                           {/* Placeholder for promotional image */}
-                           <div className="w-full h-full bg-secondary flex items-center justify-center text-secondary-foreground font-medium uppercase tracking-widest text-sm">
-                              {cat.name} Collection
-                           </div>
+                      {/* Right: Featured / View All */}
+                      <div className="hidden lg:flex flex-col justify-between w-64 border-l border-border/40 pl-10">
+                        <div>
+                          <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Discover {cat.name}</h4>
+                          <Link href={`${cat.href}&sort=createdAt-desc`} className="group flex items-center gap-4">
+                            <div className="h-16 w-12 bg-muted flex items-center justify-center transition-colors group-hover:bg-foreground/5">
+                              <ShoppingBag className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                            </div>
+                            <div>
+                              <p className="text-[13px] font-bold uppercase tracking-wider group-hover:text-primary transition-colors">New Arrivals</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">Shop the latest</p>
+                            </div>
+                          </Link>
                         </div>
-                        <h5 className="font-semibold text-lg mb-1">Discover {cat.name}</h5>
-                        <Link href={cat.href} className="text-sm font-medium underline underline-offset-4 hover:text-muted-foreground transition-colors">
-                          Shop Now
-                        </Link>
+                        <div className="mt-6">
+                          <Link href={cat.href} className="text-xs font-bold uppercase tracking-widest border-b border-foreground/30 hover:border-foreground pb-0.5 transition-colors">
+                            View All {cat.name}
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

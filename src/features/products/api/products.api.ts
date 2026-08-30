@@ -4,6 +4,10 @@ import { Product } from '../types';
 export interface GetProductsParams {
   search?: string;
   categoryId?: string;
+  gender?: string;
+  collection?: string;
+  size?: string;
+  color?: string;
   minPrice?: number;
   maxPrice?: number;
   inStock?: boolean;
@@ -25,10 +29,10 @@ export interface PaginatedResponse<T> {
 
 export const productsApi = {
   getProducts: async (params?: GetProductsParams) => {
-    const response = await apiClient.get<PaginatedResponse<Product>>('/products', {
+    const response = await apiClient.get<{ data: PaginatedResponse<Product> }>('/products', {
       params,
     });
-    return response.data;
+    return response.data.data;
   },
 
   getProductById: async (id: string) => {

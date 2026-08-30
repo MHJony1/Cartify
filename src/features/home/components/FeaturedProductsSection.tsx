@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { productsApi } from '@/features/products/api/products.api';
 import { ProductCard } from '@/features/products/components/ProductCard';
+import { Button } from '@/components/ui/button';
 
 export function FeaturedProductsSection() {
   const [mounted, setMounted] = useState(false);
@@ -19,26 +20,31 @@ export function FeaturedProductsSection() {
   });
 
   return (
-    <section className="py-16 bg-muted/10">
+    <section className="py-16 bg-muted/30 border-y border-border/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Featured Products</h2>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
-            Handpicked selections from our most popular collections, curated just for you.
-          </p>
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div>
+            <h2 className="text-3xl font-black tracking-tighter uppercase">New Arrivals</h2>
+            <p className="mt-2 text-muted-foreground">The latest pieces to refresh your wardrobe.</p>
+          </div>
+          <Link href="/categories/new-arrivals" className="hidden md:block">
+            <Button variant="outline" className="rounded-none uppercase tracking-widest text-xs font-semibold px-6 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors">
+              View All
+            </Button>
+          </Link>
         </div>
 
-        {/* Prevent hydration mismatch by rendering a skeleton or null before mounting if necessary, though useQuery is fine. */}
+        {/* Prevent hydration mismatch */}
         {isLoading || !mounted ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="h-80 w-full animate-pulse rounded-lg bg-muted" />
+              <div key={n} className="aspect-[3/4] w-full animate-pulse bg-muted" />
             ))}
           </div>
         ) : isError ? (
-          <div className="text-center text-destructive">Failed to load products.</div>
+          <div className="text-center py-10 text-muted-foreground">Unable to load new arrivals at this time.</div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {data?.data.map((product) => (
               <ProductCard
                 key={product.id}
@@ -48,22 +54,21 @@ export function FeaturedProductsSection() {
                 price={product.price}
                 images={product.images}
                 variants={product.variants}
-                // Optional UI properties not strictly on Product type yet
                 isNew={true}
               />
             ))}
           </div>
         )}
 
-        <div className="mt-12 text-center">
-          <Link 
-            href="/shop?collection=featured" 
-            className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            View All Featured
+        <div className="mt-12 text-center md:hidden">
+          <Link href="/categories/new-arrivals">
+            <Button variant="outline" className="w-full rounded-none uppercase tracking-widest text-xs font-semibold px-6 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors">
+              View All New Arrivals
+            </Button>
           </Link>
         </div>
       </div>
     </section>
   );
 }
+

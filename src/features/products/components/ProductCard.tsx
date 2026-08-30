@@ -1,10 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Heart, Star, ShoppingBag } from 'lucide-react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -15,10 +14,10 @@ export interface ProductCardProps {
   id: string;
   name: string;
   slug?: string;
-  price?: number; // Base price or fallback
+  price?: number;
   originalPrice?: number;
   images?: { url: string }[];
-  image?: string; // Keep for backward compatibility with mock data during transition
+  image?: string; 
   variants?: { price: number; compareAtPrice?: number | null }[];
   rating?: number;
   reviewCount?: number;
@@ -35,8 +34,6 @@ export function ProductCard({
   images,
   image,
   variants,
-  rating,
-  reviewCount,
   badge,
   isNew,
 }: ProductCardProps) {
@@ -86,86 +83,77 @@ export function ProductCard({
 
   const discount = displayOriginalPrice ? Math.round(((displayOriginalPrice - displayPrice) / displayOriginalPrice) * 100) : 0;
 
-  const displayImage = images && images.length > 0 ? images[0].url : image || '';
+  const displayImage1 = images && images.length > 0 ? images[0].url : image || '';
+  const displayImage2 = images && images.length > 1 ? images[1].url : displayImage1;
   const productLink = slug ? `/products/${slug}` : `/products/${id}`;
 
   return (
-    <Card className="group relative overflow-hidden rounded-lg border-0 shadow-sm transition-all hover:shadow-md">
-      <div className="relative aspect-square overflow-hidden bg-muted">
-        <Link href={productLink}>
+    <div className="group relative flex flex-col w-full h-full">
+      {/* Image Container */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted mb-4 rounded-sm">
+        <Link href={productLink} className="block w-full h-full">
+          {/* Primary Image */}
           <div 
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105 cursor-pointer"
-            style={{ backgroundImage: `url(${displayImage})` }}
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-700 ease-in-out opacity-100 group-hover:opacity-0"
+            style={{ backgroundImage: `url(${displayImage1})` }}
+          />
+          {/* Hover Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100 group-hover:scale-105"
+            style={{ backgroundImage: `url(${displayImage2})` }}
           />
         </Link>
         
-        <div className="absolute left-2 top-2 flex flex-col gap-1 pointer-events-none">
+        {/* Badges */}
+        <div className="absolute left-2 top-2 flex flex-col gap-1 pointer-events-none z-10">
           {isNew && (
-            <Badge className="bg-primary text-primary-foreground">New</Badge>
+            <Badge className="bg-primary text-primary-foreground uppercase tracking-widest text-[10px] font-bold rounded-none px-2 py-0.5">New</Badge>
           )}
           {discount > 0 && (
-            <Badge variant="destructive">
-              {discount}% OFF
+            <Badge variant="destructive" className="uppercase tracking-widest text-[10px] font-bold rounded-none px-2 py-0.5 bg-red-600">
+              -{discount}%
             </Badge>
           )}
           {badge && (
-            <Badge variant="secondary">
+            <Badge variant="secondary" className="uppercase tracking-widest text-[10px] font-bold rounded-none px-2 py-0.5">
               {badge}
             </Badge>
           )}
         </div>
 
-        <div className={`absolute right-2 top-2 transition-opacity ${isWishlisted ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+        {/* Wishlist Button */}
+        <div className={`absolute right-2 top-2 z-10 transition-opacity duration-300 ${isWishlisted ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
           <Button 
             variant="secondary" 
             size="icon" 
-            className={`h-8 w-8 rounded-full shadow-sm hover:text-destructive ${isWishlisted ? 'text-destructive bg-destructive/10' : ''}`}
+            className={`h-8 w-8 rounded-full shadow-sm hover:text-destructive hover:bg-white bg-white/90 border-transparent ${isWishlisted ? 'text-destructive bg-white' : 'text-muted-foreground'}`}
             onClick={handleWishlistClick}
             disabled={toggleWishlistMutation.isPending}
           >
-            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-destructive' : ''}`} />
+            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-destructive text-destructive' : ''}`} />
             <span className="sr-only">{isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}</span>
-          </Button>
-        </div>
-
-        <div className="absolute bottom-0 left-0 w-full translate-y-full p-2 transition-transform duration-300 group-hover:translate-y-0">
-          <Button className="w-full shadow-sm" size="sm">
-            <ShoppingBag className="mr-2 h-4 w-4" />
-            Add to Cart
           </Button>
         </div>
       </div>
 
-      <CardContent className="p-4">
-        <div className="mb-2 flex items-center gap-1 text-sm">
-          {rating ? (
-            <>
-              <Star className="h-3.5 w-3.5 fill-primary text-primary" />
-              <span className="font-medium text-foreground">{rating}</span>
-              <span className="text-muted-foreground">({reviewCount})</span>
-            </>
-          ) : (
-            <span className="text-muted-foreground text-xs">No reviews</span>
-          )}
-        </div>
-        
-        <Link href={productLink} className="block">
-          <h3 className="line-clamp-1 font-medium text-foreground hover:text-primary transition-colors">
+      {/* Product Details */}
+      <div className="flex flex-col flex-1 px-1">
+        <Link href={productLink} className="block mb-1">
+          <h3 className="text-sm font-semibold text-foreground tracking-tight line-clamp-1 group-hover:underline underline-offset-4 decoration-1">
             {name}
           </h3>
         </Link>
-      </CardContent>
-
-      <CardFooter className="p-4 pt-0">
-        <div className="flex items-baseline gap-2">
-          <span className="text-lg font-bold text-foreground">৳{displayPrice.toLocaleString()}</span>
+        
+        <div className="flex items-baseline gap-2 mt-auto pt-1">
+          <span className="text-sm font-medium text-foreground">৳{displayPrice.toLocaleString()}</span>
           {displayOriginalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
+            <span className="text-xs text-muted-foreground line-through">
               ৳{displayOriginalPrice.toLocaleString()}
             </span>
           )}
         </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }
+
