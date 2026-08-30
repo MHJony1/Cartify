@@ -1,9 +1,15 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Heart, Star, ShoppingBag } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCurrentUser } from '@/features/auth/hooks';
+import { wishlistApi } from '@/features/wishlist/api/wishlist.api';
 
 export interface ProductCardProps {
   id: string;
@@ -34,6 +40,40 @@ export function ProductCard({
   badge,
   isNew,
 }: ProductCardProps) {
+  const router = useRouter();
+  const { data: user } = useCurrentUser();
+  const queryClient = useQueryClient();
+
+  const { data: wishlist = [] } = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: wishlistApi.getMyWishlist,
+    enabled: !!user,
+  });
+
+  const isWishlisted = wishlist.some((item) => item.productId === id);
+
+  const toggleWishlistMutation = useMutation({
+    mutationFn: async () => {
+      if (isWishlisted) {
+        return wishlistApi.removeFromWishlist(id);
+      } else {
+        return wishlistApi.addToWishlist(id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    },
+  });
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    toggleWishlistMutation.mutate();
+  };
+
   // Determine display price from variants (lowest price) or fallback to base price
   let displayPrice = price || 0;
   let displayOriginalPrice = originalPrice;
@@ -46,39 +86,45 @@ export function ProductCard({
 
   const discount = displayOriginalPrice ? Math.round(((displayOriginalPrice - displayPrice) / displayOriginalPrice) * 100) : 0;
 
-  
   const displayImage = images && images.length > 0 ? images[0].url : image || '';
   const productLink = slug ? `/products/${slug}` : `/products/${id}`;
 
   return (
     <Card className="group relative overflow-hidden rounded-lg border-0 shadow-sm transition-all hover:shadow-md">
       <div className="relative aspect-square overflow-hidden bg-muted">
-        {/* Placeholder for Next.js Image */}
-        <div 
-          className="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-          style={{ backgroundImage: `url(${displayImage})` }}
-        />
+        <Link href={productLink}>
+          <div 
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+            style={{ backgroundImage: `url(${displayImage})` }}
+          />
+        </Link>
         
-        <div className="absolute left-2 top-2 flex flex-col gap-1">
+        <div className="absolute left-2 top-2 flex flex-col gap-1 pointer-events-none">
           {isNew && (
-            <Badge className="bg-primary text-primary-foreground pointer-events-none">New</Badge>
+            <Badge className="bg-primary text-primary-foreground">New</Badge>
           )}
           {discount > 0 && (
-            <Badge variant="destructive" className="pointer-events-none">
+            <Badge variant="destructive">
               {discount}% OFF
             </Badge>
           )}
           {badge && (
-            <Badge variant="secondary" className="pointer-events-none">
+            <Badge variant="secondary">
               {badge}
             </Badge>
           )}
         </div>
 
-        <div className="absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100">
-          <Button variant="secondary" size="icon" className="h-8 w-8 rounded-full shadow-sm hover:text-destructive">
-            <Heart className="h-4 w-4" />
-            <span className="sr-only">Add to wishlist</span>
+        <div className={`absolute right-2 top-2 transition-opacity ${isWishlisted ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+          <Button 
+            variant="secondary" 
+            size="icon" 
+            className={`h-8 w-8 rounded-full shadow-sm hover:text-destructive ${isWishlisted ? 'text-destructive bg-destructive/10' : ''}`}
+            onClick={handleWishlistClick}
+            disabled={toggleWishlistMutation.isPending}
+          >
+            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-destructive' : ''}`} />
+            <span className="sr-only">{isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}</span>
           </Button>
         </div>
 
@@ -103,7 +149,7 @@ export function ProductCard({
           )}
         </div>
         
-        <Link href={`/products/${id}`} className="block">
+        <Link href={productLink} className="block">
           <h3 className="line-clamp-1 font-medium text-foreground hover:text-primary transition-colors">
             {name}
           </h3>

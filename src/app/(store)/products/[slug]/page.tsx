@@ -1,15 +1,144 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { productsApi } from "@/features/products/api/products.api";
 import { Product, ProductVariant } from "@/features/products/types";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, AlertCircle, Minus, Plus, Heart } from "lucide-react";
+import { ShoppingBag, AlertCircle, Minus, Plus, Heart, Star, User } from "lucide-react";
 import Image from "next/image";
 import { useCartStore } from "@/features/cart/store/cart.store";
+import { useCurrentUser } from "@/features/auth/hooks";
+import { wishlistApi } from "@/features/wishlist/api/wishlist.api";
+import { reviewsApi } from "@/features/reviews/api/reviews.api";
+import { useRouter } from "next/navigation";
+
+function ReviewsSection({ productId }: { productId: string }) {
+  const { data: user } = useCurrentUser();
+  const queryClient = useQueryClient();
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const { data: reviewsResponse, isLoading } = useQuery({
+    queryKey: ["reviews", productId],
+    queryFn: () => reviewsApi.getProductReviews(productId, { limit: 10 }),
+  });
+
+  const createReviewMutation = useMutation({
+    mutationFn: (payload: { productId: string; rating: number; comment: string }) => reviewsApi.createReview(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
+      setComment("");
+      setRating(5);
+      setErrorMsg("");
+    },
+    onError: (error: any) => {
+      setErrorMsg(error.response?.data?.message || "Failed to submit review");
+    }
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    createReviewMutation.mutate({ productId, rating, comment });
+  };
+
+  const reviews = reviewsResponse?.data || [];
+  const total = reviewsResponse?.meta?.total || 0;
+
+  return (
+    <div className="mt-16 pt-16 border-t border-border">
+      <h2 className="text-2xl font-bold tracking-tight mb-8 text-foreground">Customer Reviews ({total})</h2>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="lg:col-span-2 space-y-8">
+          {isLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-24 w-full rounded-xl" />
+              <Skeleton className="h-24 w-full rounded-xl" />
+            </div>
+          ) : reviews.length === 0 ? (
+            <p className="text-muted-foreground">No reviews yet. Be the first to review this product!</p>
+          ) : (
+            reviews.map((review) => (
+              <div key={review.id} className="border-b border-border/50 pb-6 last:border-0">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center border">
+                      {review.user.image ? <img src={review.user.image} className="rounded-full w-full h-full object-cover" alt={review.user.name} /> : <User className="h-5 w-5 text-muted-foreground" />}
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">{review.user.name}</p>
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map(star => (
+                          <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'fill-primary text-primary' : 'text-muted'}`} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{new Date(review.createdAt).toLocaleDateString()}</span>
+                </div>
+                {review.comment && <p className="text-muted-foreground text-sm mt-3">{review.comment}</p>}
+              </div>
+            ))
+          )}
+        </div>
+
+        <div>
+          {user ? (
+            <div className="bg-muted/30 rounded-xl p-6 border border-border/50">
+              <h3 className="font-semibold text-lg mb-4 text-foreground">Write a Review</h3>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {errorMsg && (
+                  <div className="p-3 bg-destructive/10 text-destructive text-sm rounded-md border border-destructive/20">
+                    {errorMsg}
+                  </div>
+                )}
+                <div>
+                  <label className="text-sm font-medium mb-2 block text-foreground">Rating</label>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setRating(star)}
+                        className="p-1 hover:scale-110 transition-transform"
+                      >
+                        <Star className={`h-6 w-6 ${star <= rating ? 'fill-primary text-primary' : 'text-muted-foreground/30'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block text-foreground">Comment (Optional)</label>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-24 resize-none"
+                    placeholder="What did you like or dislike?"
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={createReviewMutation.isPending}>
+                  {createReviewMutation.isPending ? "Submitting..." : "Submit Review"}
+                </Button>
+              </form>
+            </div>
+          ) : (
+            <div className="bg-muted/30 rounded-xl p-6 text-center border border-border/50">
+              <p className="text-muted-foreground mb-4">Please log in to write a review.</p>
+              <Button onClick={() => window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`} variant="outline" className="w-full">
+                Log In
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function ProductDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
   const [resolvedParams, setResolvedParams] = useState<{ slug: string } | null>(null);
@@ -28,6 +157,40 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { data: user } = useCurrentUser();
+
+  const { data: wishlist = [] } = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: wishlistApi.getMyWishlist,
+    enabled: !!user,
+  });
+
+  const isWishlisted = product ? wishlist.some((item) => item.productId === product.id) : false;
+
+  const toggleWishlistMutation = useMutation({
+    mutationFn: async () => {
+      if (!product) return;
+      if (isWishlisted) {
+        return wishlistApi.removeFromWishlist(product.id);
+      } else {
+        return wishlistApi.addToWishlist(product.id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    },
+  });
+
+  const handleWishlistClick = () => {
+    if (!user) {
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    toggleWishlistMutation.mutate();
+  };
 
   // Set initial selections when product loads
   useEffect(() => {
@@ -112,8 +275,6 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
       quantity: quantity,
       stock: selectedVariant.stock,
     });
-
-    alert('Added to Cart!');
   };
 
   if (!resolvedParams || isLoading) {
@@ -153,7 +314,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
   const inStock = stock > 0;
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
+    <div className="container mx-auto px-4 py-8 md:py-16 max-w-7xl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
         
         {/* Images Gallery */}
@@ -331,14 +492,22 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
               <ShoppingBag className="mr-2 h-5 w-5" />
               {inStock ? "Add to Cart" : "Out of Stock"}
             </Button>
-            <Button size="lg" variant="outline" className="px-4" onClick={() => alert('Added to Wishlist!')}>
-              <Heart className="h-5 w-5" />
-              <span className="sr-only">Add to Wishlist</span>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className={`px-4 ${isWishlisted ? 'text-destructive bg-destructive/10 border-destructive/20' : ''}`} 
+              onClick={handleWishlistClick}
+              disabled={toggleWishlistMutation.isPending}
+            >
+              <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-destructive' : ''}`} />
+              <span className="sr-only">{isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}</span>
             </Button>
           </div>
           
         </div>
       </div>
+
+      <ReviewsSection productId={product.id} />
     </div>
   );
 }
