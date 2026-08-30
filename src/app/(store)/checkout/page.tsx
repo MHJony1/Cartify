@@ -12,8 +12,8 @@ import { paymentApi } from "@/features/payment/api/payment.api";
 import { cartApi } from "@/features/cart/api/cart.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { AlertCircle, MapPin, CreditCard, ChevronRight, Check } from "lucide-react";
+import { AlertCircle, Check, Plus, CreditCard, Wallet } from "lucide-react";
+import Link from "next/link";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -55,7 +55,7 @@ export default function CheckoutPage() {
     }
   }, [mounted, cart.items, router]);
 
-  // Sync cart to backend to satisfy Coupon API constraints
+  // Sync cart to backend
   useEffect(() => {
     const syncCart = async () => {
       if (mounted && user && cart.items.length > 0 && !syncComplete && !isSyncing) {
@@ -72,7 +72,7 @@ export default function CheckoutPage() {
           setSyncComplete(true);
         } catch (error) {
           console.error("Failed to sync cart", error);
-          alert("Failed to synchronize cart. Coupon application might fail.");
+          // Non-blocking but warn user
         } finally {
           setIsSyncing(false);
         }
@@ -104,6 +104,7 @@ export default function CheckoutPage() {
       refetchAddresses();
       setIsAddingAddress(false);
       setSelectedAddressId(data.data.id);
+      setNewAddress({ name: "", phone: "", division: "", district: "", area: "", addressLine: "", postalCode: "" });
     },
     onError: (err: any) => alert(err?.response?.data?.message || "Failed to add address"),
   });
@@ -136,7 +137,6 @@ export default function CheckoutPage() {
     if (!selectedAddressId) return alert("Please select a shipping address");
     
     try {
-      // 1. Create Order
       const orderResponse = await createOrderMutation.mutateAsync({
         items: cart.items.map(i => ({
           productId: i.productId,
@@ -148,16 +148,13 @@ export default function CheckoutPage() {
         paymentMethod,
       });
 
-      // 2. Create Payment Record
       await createPaymentMutation.mutateAsync({
         orderId: orderResponse.data.id,
         method: paymentMethod,
       });
 
-      // 3. Clear cart ONLY on complete success
+      // Clear cart ONLY on complete success
       cart.clearCart();
-      
-      // 4. Redirect to success page
       router.push(`/checkout/success?orderId=${orderResponse.data.id}`);
 
     } catch (error: any) {
@@ -166,88 +163,102 @@ export default function CheckoutPage() {
   };
 
   if (!mounted || isUserLoading || !user || cart.items.length === 0) {
-    return <div className="min-h-screen flex items-center justify-center"><div className="animate-pulse w-32 h-32 bg-muted rounded-full" /></div>;
+    return <div className="min-h-[60vh] flex items-center justify-center"><div className="animate-pulse w-32 h-32 bg-muted rounded-full" /></div>;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">Checkout</h1>
+    <div className="container mx-auto px-4 py-12 md:py-20 max-w-7xl">
+      <h1 className="text-3xl font-bold tracking-tight uppercase mb-12 border-b border-border/40 pb-6">Secure Checkout</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+        
         {/* Left Column: Details */}
-        <div className="lg:col-span-7 flex flex-col gap-8">
+        <div className="lg:col-span-7 xl:col-span-7 flex flex-col gap-12">
           
           {/* Shipping Address */}
-          <section className="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              Shipping Address
-            </h2>
+          <section>
+            <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b border-foreground inline-block pb-1">1. Delivery Details</h2>
             
             {addresses.length > 0 && !isAddingAddress ? (
               <div className="space-y-4">
                 {addresses.map((addr) => (
-                  <label key={addr.id} className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${selectedAddressId === addr.id ? 'border-primary bg-primary/5' : 'hover:bg-muted'}`}>
-                    <input 
-                      type="radio" 
-                      name="address" 
-                      className="mt-1"
-                      checked={selectedAddressId === addr.id}
-                      onChange={() => setSelectedAddressId(addr.id)}
-                    />
+                  <label key={addr.id} className={`flex items-start gap-4 p-5 border-2 cursor-pointer transition-all ${selectedAddressId === addr.id ? 'border-foreground' : 'border-border/50 hover:border-foreground/30'}`}>
+                    <div className="pt-1">
+                      <div className={`h-4 w-4 rounded-full border flex items-center justify-center ${selectedAddressId === addr.id ? 'border-foreground' : 'border-muted-foreground'}`}>
+                        {selectedAddressId === addr.id && <div className="h-2 w-2 rounded-full bg-foreground" />}
+                      </div>
+                      <input 
+                        type="radio" 
+                        name="address" 
+                        className="hidden"
+                        checked={selectedAddressId === addr.id}
+                        onChange={() => setSelectedAddressId(addr.id)}
+                      />
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">{addr.name} - {addr.phone}</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {addr.addressLine}, {addr.area}, {addr.district}, {addr.division} - {addr.postalCode}
+                      <p className="font-semibold text-foreground">{addr.name}</p>
+                      <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                        {addr.addressLine}, {addr.area}, <br/>
+                        {addr.district}, {addr.division} {addr.postalCode}
                       </p>
+                      <p className="text-sm font-medium mt-2">{addr.phone}</p>
                     </div>
                   </label>
                 ))}
-                <Button variant="outline" onClick={() => setIsAddingAddress(true)}>Add New Address</Button>
+                <button 
+                  className="text-xs font-bold uppercase tracking-widest flex items-center text-muted-foreground hover:text-foreground transition-colors mt-6"
+                  onClick={() => setIsAddingAddress(true)}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add New Address
+                </button>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2"><label className="text-sm font-medium">Name</label><Input value={newAddress.name} onChange={e => setNewAddress({...newAddress, name: e.target.value})} /></div>
-                  <div className="space-y-2"><label className="text-sm font-medium">Phone</label><Input value={newAddress.phone} onChange={e => setNewAddress({...newAddress, phone: e.target.value})} /></div>
+              <div className="bg-muted/10 p-6 sm:p-8 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest">Full Name</label><Input className="h-12 rounded-none border-border/50 bg-background" value={newAddress.name} onChange={e => setNewAddress({...newAddress, name: e.target.value})} /></div>
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest">Phone Number</label><Input className="h-12 rounded-none border-border/50 bg-background" value={newAddress.phone} onChange={e => setNewAddress({...newAddress, phone: e.target.value})} /></div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2"><label className="text-sm font-medium">Division</label><Input value={newAddress.division} onChange={e => setNewAddress({...newAddress, division: e.target.value})} /></div>
-                  <div className="space-y-2"><label className="text-sm font-medium">District</label><Input value={newAddress.district} onChange={e => setNewAddress({...newAddress, district: e.target.value})} /></div>
+                <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest">Address Line (Street, House)</label><Input className="h-12 rounded-none border-border/50 bg-background" value={newAddress.addressLine} onChange={e => setNewAddress({...newAddress, addressLine: e.target.value})} /></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest">Area / Thana</label><Input className="h-12 rounded-none border-border/50 bg-background" value={newAddress.area} onChange={e => setNewAddress({...newAddress, area: e.target.value})} /></div>
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest">District</label><Input className="h-12 rounded-none border-border/50 bg-background" value={newAddress.district} onChange={e => setNewAddress({...newAddress, district: e.target.value})} /></div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2"><label className="text-sm font-medium">Area</label><Input value={newAddress.area} onChange={e => setNewAddress({...newAddress, area: e.target.value})} /></div>
-                  <div className="space-y-2"><label className="text-sm font-medium">Postal Code</label><Input value={newAddress.postalCode} onChange={e => setNewAddress({...newAddress, postalCode: e.target.value})} /></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest">Division</label><Input className="h-12 rounded-none border-border/50 bg-background" value={newAddress.division} onChange={e => setNewAddress({...newAddress, division: e.target.value})} /></div>
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest">Postal Code</label><Input className="h-12 rounded-none border-border/50 bg-background" value={newAddress.postalCode} onChange={e => setNewAddress({...newAddress, postalCode: e.target.value})} /></div>
                 </div>
-                <div className="space-y-2"><label className="text-sm font-medium">Address Line</label><Input value={newAddress.addressLine} onChange={e => setNewAddress({...newAddress, addressLine: e.target.value})} /></div>
                 
-                <div className="flex gap-4 pt-2">
+                <div className="flex gap-4 pt-4">
                   <Button 
+                    className="uppercase tracking-widest text-xs h-12 px-8 rounded-none font-bold"
                     onClick={() => addAddressMutation.mutate(newAddress)} 
                     disabled={addAddressMutation.isPending || !newAddress.name || !newAddress.addressLine}
                   >
                     {addAddressMutation.isPending ? "Saving..." : "Save Address"}
                   </Button>
-                  {addresses.length > 0 && <Button variant="ghost" onClick={() => setIsAddingAddress(false)}>Cancel</Button>}
+                  {addresses.length > 0 && <Button variant="outline" className="uppercase tracking-widest text-xs h-12 px-8 rounded-none border-2 font-bold" onClick={() => setIsAddingAddress(false)}>Cancel</Button>}
                 </div>
               </div>
             )}
           </section>
 
           {/* Payment Method */}
-          <section className="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <CreditCard className="h-5 w-5 text-primary" />
-              Payment Method
-            </h2>
-            <div className="space-y-4">
-              <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${paymentMethod === 'COD' ? 'border-primary bg-primary/5' : 'hover:bg-muted'}`}>
-                <input type="radio" checked={paymentMethod === 'COD'} onChange={() => setPaymentMethod('COD')} />
-                <span className="font-medium">Cash on Delivery (COD)</span>
+          <section>
+            <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b border-foreground inline-block pb-1">2. Payment Method</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label className={`flex flex-col items-center justify-center p-8 border-2 cursor-pointer transition-all text-center ${paymentMethod === 'COD' ? 'border-foreground bg-foreground/5' : 'border-border/50 hover:border-foreground/30'}`}>
+                <input type="radio" className="hidden" checked={paymentMethod === 'COD'} onChange={() => setPaymentMethod('COD')} />
+                <Wallet className={`h-8 w-8 mb-4 ${paymentMethod === 'COD' ? 'text-foreground' : 'text-muted-foreground'}`} />
+                <span className="font-bold text-sm uppercase tracking-widest">Cash on Delivery</span>
+                <span className="text-xs text-muted-foreground mt-2">Pay when you receive</span>
               </label>
-              <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${paymentMethod === 'ONLINE' ? 'border-primary bg-primary/5' : 'hover:bg-muted'}`}>
-                <input type="radio" checked={paymentMethod === 'ONLINE'} onChange={() => setPaymentMethod('ONLINE')} />
-                <span className="font-medium">Pay Online (Card/Mobile Banking)</span>
+              
+              <label className={`flex flex-col items-center justify-center p-8 border-2 cursor-pointer transition-all text-center ${paymentMethod === 'ONLINE' ? 'border-foreground bg-foreground/5' : 'border-border/50 hover:border-foreground/30'}`}>
+                <input type="radio" className="hidden" checked={paymentMethod === 'ONLINE'} onChange={() => setPaymentMethod('ONLINE')} />
+                <CreditCard className={`h-8 w-8 mb-4 ${paymentMethod === 'ONLINE' ? 'text-foreground' : 'text-muted-foreground'}`} />
+                <span className="font-bold text-sm uppercase tracking-widest">Pay Online</span>
+                <span className="text-xs text-muted-foreground mt-2">Cards & Mobile Banking</span>
               </label>
             </div>
           </section>
@@ -255,61 +266,68 @@ export default function CheckoutPage() {
         </div>
 
         {/* Right Column: Order Summary */}
-        <div className="lg:col-span-5">
-          <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 sticky top-24">
-            <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+        <div className="lg:col-span-5 xl:col-span-5">
+          <div className="bg-muted/10 p-6 sm:p-8 sticky top-28 border border-border/30">
+            <h2 className="text-sm font-bold uppercase tracking-widest mb-8">Order Summary</h2>
             
-            <div className="flex flex-col gap-4 mb-6 max-h-80 overflow-y-auto pr-2">
+            <div className="flex flex-col gap-6 mb-8 max-h-[40vh] overflow-y-auto pr-2">
               {cart.items.map((item) => (
-                <div key={item.variantId} className="flex gap-3">
-                  <div className="h-16 w-16 shrink-0 rounded-md bg-muted border overflow-hidden">
+                <div key={item.variantId} className="flex gap-4 group">
+                  <div className="h-24 w-20 shrink-0 bg-muted overflow-hidden relative">
                     <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="flex-1 text-sm flex flex-col justify-between">
-                    <div className="font-medium line-clamp-1">{item.name}</div>
-                    <div className="text-muted-foreground flex gap-2">
-                      <span>{item.color}</span> / <span>{item.size}</span>
+                    <div className="absolute top-0 right-0 bg-background/90 text-[10px] font-bold px-1.5 py-0.5 m-1 rounded-sm">
+                      x{item.quantity}
                     </div>
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-muted-foreground">Qty: {item.quantity}</span>
-                      <span className="font-medium">৳{(item.price * item.quantity).toLocaleString()}</span>
+                  </div>
+                  <div className="flex-1 text-sm flex flex-col justify-between py-1">
+                    <div>
+                      <div className="font-bold line-clamp-1 leading-tight">{item.name}</div>
+                      <div className="text-muted-foreground text-xs mt-1.5">
+                        {item.color} | {item.size}
+                      </div>
+                    </div>
+                    <div className="font-semibold text-right">
+                      ৳{(item.price * item.quantity).toLocaleString()}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <Separator className="my-4" />
-
-            {/* Coupon */}
-            <div className="mb-6">
-              <label className="text-sm font-medium mb-2 block">Discount Code</label>
-              <div className="flex gap-2">
+            <div className="border-t border-border/50 pt-6 mb-6">
+              <label className="text-xs font-bold uppercase tracking-widest mb-3 block">Promo Code</label>
+              <div className="flex">
                 <Input 
                   placeholder="Enter code" 
                   value={couponCode} 
                   onChange={(e) => setCouponCode(e.target.value)} 
                   disabled={!!appliedCoupon}
+                  className="h-12 rounded-none border-border/50 bg-background rounded-l-sm focus-visible:ring-0 focus-visible:border-foreground"
                 />
                 {!appliedCoupon ? (
                   <Button 
-                    variant="secondary" 
+                    variant="outline" 
+                    className="h-12 rounded-none rounded-r-sm border-y-2 border-r-2 border-l-0 uppercase tracking-widest font-bold text-xs px-6"
                     onClick={() => applyCouponMutation.mutate(couponCode)}
                     disabled={!couponCode || applyCouponMutation.isPending}
                   >
                     Apply
                   </Button>
                 ) : (
-                  <Button variant="destructive" onClick={() => { setAppliedCoupon(null); setCouponCode(""); }}>
+                  <Button 
+                    variant="destructive" 
+                    className="h-12 rounded-none rounded-r-sm uppercase tracking-widest font-bold text-xs px-6"
+                    onClick={() => { setAppliedCoupon(null); setCouponCode(""); }}
+                  >
                     Remove
                   </Button>
                 )}
               </div>
-              {couponError && <p className="text-sm text-destructive mt-1 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{couponError}</p>}
-              {appliedCoupon && <p className="text-sm text-green-600 mt-1 flex items-center gap-1"><Check className="h-3 w-3" />Coupon applied successfully</p>}
+              {couponError && <p className="text-xs text-destructive mt-2 flex items-center font-medium"><AlertCircle className="h-3 w-3 mr-1" />{couponError}</p>}
+              {appliedCoupon && <p className="text-xs text-green-600 mt-2 flex items-center font-medium"><Check className="h-3 w-3 mr-1" />Discount applied</p>}
             </div>
 
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-sm mb-6">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span>৳{subtotal.toLocaleString()}</span>
@@ -326,20 +344,26 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <Separator className="my-4" />
-
-            <div className="flex justify-between items-center mb-6">
-              <span className="font-semibold text-lg">Total</span>
-              <span className="font-bold text-2xl text-primary">৳{total.toLocaleString()}</span>
+            <div className="border-t border-border/50 pt-6 mb-8">
+              <div className="flex justify-between items-center">
+                <span className="font-bold uppercase tracking-widest">Total</span>
+                <span className="font-bold text-2xl">৳{total.toLocaleString()}</span>
+              </div>
             </div>
 
             <Button 
-              className="w-full h-12 text-lg" 
+              className="w-full h-14 rounded-none uppercase tracking-widest text-xs font-bold" 
               onClick={handlePlaceOrder}
               disabled={createOrderMutation.isPending || createPaymentMutation.isPending || !selectedAddressId || isSyncing}
             >
-              {isSyncing ? "Syncing Cart..." : createOrderMutation.isPending || createPaymentMutation.isPending ? "Processing..." : "Place Order"}
+              {isSyncing ? "Syncing..." : createOrderMutation.isPending || createPaymentMutation.isPending ? "Processing..." : "Place Order"}
             </Button>
+            
+            <div className="mt-6 flex justify-center items-center">
+              <Link href="/cart" className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4">
+                Return to Cart
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ import { useCartStore } from '@/features/cart/store/cart.store';
 import { useCurrentUser } from '@/features/auth/hooks';
 import { productsApi } from '@/features/products/api/products.api';
 import { Product } from '@/features/products/types';
+import { MiniCart } from '@/features/cart/components/MiniCart';
 
 const MEGA_MENU = [
   {
@@ -450,17 +451,7 @@ export function Navbar() {
             </Link>
 
             {/* Cart */}
-            <Link href="/cart">
-              <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
-                <ShoppingBag className="h-5 w-5" />
-                {isMounted && totalCartItems > 0 && (
-                  <Badge variant="default" className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px] bg-primary text-primary-foreground border-background border-2 font-bold shadow-sm">
-                    {totalCartItems}
-                  </Badge>
-                )}
-                <span className="sr-only">Cart</span>
-              </Button>
-            </Link>
+            <MiniCart />
             
           </div>
         </div>
