@@ -7,7 +7,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  // withCredentials: true, // Uncomment if the backend uses cookie-based authentication
+  withCredentials: true,
 });
 
 // Response Interceptor for common error handling

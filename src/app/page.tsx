@@ -1,8 +1,26 @@
+import { StorefrontLayout } from '@/components/layout/storefront/StorefrontLayout';
+import {
+  HeroSection,
+  CategoryShowcase,
+  FeaturedProductsSection,
+  PromoSection,
+  BestSellersSection,
+  BenefitsSection,
+  TestimonialsSection,
+  NewsletterSection,
+} from '@/features/home';
+
 export default function Home() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold">Cartify Frontend</h1>
-      <p>Phase 1 Foundation is working.</p>
-    </div>
+    <StorefrontLayout>
+      <HeroSection />
+      <CategoryShowcase />
+      <FeaturedProductsSection />
+      <PromoSection />
+      <BestSellersSection />
+      <BenefitsSection />
+      <TestimonialsSection />
+      <NewsletterSection />
+    </StorefrontLayout>
   );
 }
