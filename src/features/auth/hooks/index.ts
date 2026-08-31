@@ -47,3 +47,20 @@ export const useLogout = () => {
     },
   });
 };
+
+export const useGoogleLogin = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (credential: string) => authApi.googleLogin(credential),
+    onSuccess: (data) => {
+      queryClient.setQueryData(AUTH_KEYS.currentUser, data.user);
+    },
+  });
+};
+
+export const useUploadImage = () => {
+  return useMutation({
+    mutationFn: (file: File) => authApi.uploadImage(file),
+  });
+};

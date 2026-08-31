@@ -3,8 +3,8 @@ export type UserRole = 'USER' | 'ADMIN';
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  image?: string;
   role: UserRole;
 }
 
@@ -25,4 +25,6 @@ export interface RegisterCredentials {
   password?: string;
   firstName?: string;
   lastName?: string;
+  phone?: string;
+  image?: string;
 }

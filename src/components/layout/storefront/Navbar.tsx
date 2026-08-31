@@ -9,10 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { MobileNavigation } from './MobileNavigation';
 import { useCartStore } from '@/features/cart/store/cart.store';
-import { useCurrentUser } from '@/features/auth/hooks';
+import { useCurrentUser, useLogout } from '@/features/auth/hooks';
 import { productsApi } from '@/features/products/api/products.api';
 import { Product } from '@/features/products/types';
 import { MiniCart } from '@/features/cart/components/MiniCart';
+import { Avatar } from '@/components/ui/avatar';
 
 const MEGA_MENU = [
   {
@@ -116,6 +117,7 @@ export function Navbar() {
 
   // Auth State
   const { data: user, isLoading: isUserLoading } = useCurrentUser();
+  const logoutMutation = useLogout();
 
   // Search State
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -394,7 +396,11 @@ export function Navbar() {
                 className="hidden sm:flex text-muted-foreground hover:text-foreground"
                 onClick={() => setIsAccountOpen(!isAccountOpen)}
               >
-                <User className="h-5 w-5" />
+                {!isUserLoading && user ? (
+                  <Avatar image={user.image} name={user.name} size="sm" />
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
                 <span className="sr-only">Account</span>
               </Button>
               
@@ -403,7 +409,7 @@ export function Navbar() {
                   {!isUserLoading && user ? (
                     <>
                       <div className="px-4 py-3 border-b border-border/50 mb-2 bg-muted/20">
-                        <p className="text-sm font-semibold truncate">{user.firstName} {user.lastName}</p>
+                        <p className="text-sm font-semibold truncate">{user.name}</p>
                         <p className="text-xs text-muted-foreground truncate mt-0.5">{user.email}</p>
                       </div>
                       <Link href="/profile" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
@@ -417,14 +423,15 @@ export function Navbar() {
                       </Link>
                       <div className="border-t border-border/50 mt-2 pt-2">
                         <button 
-                          className="flex w-full items-center px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
-                          onClick={() => {
+                          className="flex w-full items-center px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
+                          disabled={logoutMutation.isPending}
+                          onClick={async () => {
+                            await logoutMutation.mutateAsync();
                             setIsAccountOpen(false);
-                            localStorage.removeItem('cartify_token'); 
-                            window.location.href = '/login';
+                            router.push('/login');
                           }}
                         >
-                          <LogOut className="mr-3 h-4 w-4" /> Sign out
+                          <LogOut className="mr-3 h-4 w-4" /> {logoutMutation.isPending ? 'Signing out...' : 'Sign out'}
                         </button>
                       </div>
                     </>

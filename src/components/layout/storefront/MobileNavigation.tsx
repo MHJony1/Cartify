@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Menu, User, Heart, Package, LogOut, ChevronRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { useCurrentUser } from '@/features/auth/hooks';
+import { useCurrentUser, useLogout } from '@/features/auth/hooks';
+import { Avatar } from '@/components/ui/avatar';
 
 const MOBILE_CATEGORIES: { name: string; href: string; className?: string }[] = [
   { name: 'Men', href: '/categories/men' },
@@ -22,9 +23,10 @@ const SIMPLE_LINKS = [
 export function MobileNavigation() {
   const [open, setOpen] = useState(false);
   const { data: user, isLoading: isUserLoading } = useCurrentUser();
+  const logoutMutation = useLogout();
 
-  const handleLogout = () => {
-    localStorage.removeItem('cartify_token');
+  const handleLogout = async () => {
+    await logoutMutation.mutateAsync();
     window.location.href = '/login';
   };
 
@@ -74,11 +76,9 @@ export function MobileNavigation() {
               {!isUserLoading && user ? (
                 <div className="flex flex-col gap-6">
                   <div className="flex items-center gap-4 mb-2 p-4 bg-background rounded-lg border shadow-sm">
-                    <div className="h-12 w-12 bg-muted rounded-full flex items-center justify-center shrink-0">
-                      <User className="h-6 w-6 text-muted-foreground" />
-                    </div>
+                    <Avatar image={user.image} name={user.name} size="lg" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-base font-semibold truncate">{user.firstName} {user.lastName}</p>
+                      <p className="text-base font-semibold truncate">{user.name}</p>
                       <p className="text-sm text-muted-foreground truncate mt-0.5">{user.email}</p>
                     </div>
                   </div>
