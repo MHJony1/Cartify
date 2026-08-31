@@ -35,9 +35,17 @@ export interface OrderItem {
   product: Product;
 }
 
+export interface OrderUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+}
+
 export interface Order {
   id: string;
   userId: string;
+  user?: OrderUser;
   totalAmount: number;
   subtotal: number;
   discountAmount: number;
@@ -47,6 +55,26 @@ export interface Order {
   shippingAddress: string;
   createdAt: string;
   items: OrderItem[];
+}
+
+export interface GetOrdersParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+  paymentStatus?: string;
+  paymentMethod?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export const ordersApi = {
@@ -63,5 +91,26 @@ export const ordersApi = {
   getSingleOrder: async (id: string) => {
     const response = await apiClient.get<{ data: Order }>(`/orders/${id}`);
     return response.data.data;
-  }
+  },
+
+  // Admin APIs
+  getAllOrders: async (params?: GetOrdersParams) => {
+    const response = await apiClient.get<{ data: PaginatedResponse<Order> }>('/orders', { params });
+    return response.data.data;
+  },
+
+  adminGetSingleOrder: async (id: string) => {
+    const response = await apiClient.get<{ data: Order }>(`/orders/admin/${id}`);
+    return response.data.data;
+  },
+
+  updateOrderStatus: async ({ id, status }: { id: string; status: string }) => {
+    const response = await apiClient.patch<{ data: Order }>(`/orders/${id}/status`, { status });
+    return response.data.data;
+  },
+
+  updatePaymentStatus: async ({ id, paymentStatus }: { id: string; paymentStatus: string }) => {
+    const response = await apiClient.patch<{ data: Order }>(`/orders/${id}/payment-status`, { paymentStatus });
+    return response.data.data;
+  },
 };
