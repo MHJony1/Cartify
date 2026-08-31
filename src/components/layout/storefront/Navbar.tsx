@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, ShoppingBag, Heart, User, X, LogOut, Package, Heart as HeartIcon, ChevronRight } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, X, LogOut, Package, Heart as HeartIcon, ChevronRight, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -420,6 +420,9 @@ export function Navbar() {
                       </Link>
                       <Link href="/wishlist" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
                         <HeartIcon className="mr-3 h-4 w-4 text-muted-foreground" /> Wishlist
+                      </Link>
+                      <Link href="/addresses" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
+                        <MapPin className="mr-3 h-4 w-4 text-muted-foreground" /> Addresses
                       </Link>
                       <div className="border-t border-border/50 mt-2 pt-2">
                         <button 

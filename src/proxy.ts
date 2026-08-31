@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const protectedRoutes = [
-  '/cart', 
   '/checkout', 
   '/profile', 
   '/orders', 
@@ -13,9 +12,9 @@ const protectedRoutes = [
 const adminRoutes = ['/admin'];
 const authRoutes = ['/login', '/register'];
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get('cartify_access_token')?.value;
+  const token = request.cookies.get('accessToken')?.value;
 
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
@@ -23,7 +22,7 @@ export function proxy(request: NextRequest) {
 
   if (!token && (isProtectedRoute || isAdminRoute)) {
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('callbackUrl', pathname);
+    loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 

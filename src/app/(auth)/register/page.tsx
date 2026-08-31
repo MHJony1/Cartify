@@ -1,6 +1,7 @@
 import { RegisterForm } from '@/features/auth/components/RegisterForm';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: 'Create Account | Cartify',
@@ -11,9 +12,11 @@ export default function RegisterPage() {
   return (
     <div className="flex-grow flex w-full">
       {/* Left Side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 xl:p-32 relative order-2 lg:order-1">
-        <div className="w-full max-w-[420px] mx-auto pt-16 lg:pt-0">
-          <RegisterForm />
+      <div className="w-full lg:w-1/2 flex p-8 sm:p-12 lg:p-24 xl:p-32 relative order-2 lg:order-1">
+        <div className="w-full max-w-[420px] m-auto pt-16 lg:pt-0">
+          <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Loading...</div>}>
+            <RegisterForm />
+          </Suspense>
         </div>
       </div>
 
@@ -24,6 +27,7 @@ export default function RegisterPage() {
           alt="Fashion editorial"
           fill
           priority
+          sizes="50vw"
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/5" />

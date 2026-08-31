@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, User, Heart, Package, LogOut, ChevronRight } from 'lucide-react';
+import { Menu, User, Heart, Package, LogOut, ChevronRight, MapPin } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser, useLogout } from '@/features/auth/hooks';
@@ -92,6 +92,9 @@ export function MobileNavigation() {
                     </Link>
                     <Link href="/wishlist" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors" onClick={() => setOpen(false)}>
                       <Heart className="mr-4 h-5 w-5 text-muted-foreground" /> Wishlist
+                    </Link>
+                    <Link href="/addresses" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors" onClick={() => setOpen(false)}>
+                      <MapPin className="mr-4 h-5 w-5 text-muted-foreground" /> Addresses
                     </Link>
                   </div>
                   

@@ -157,7 +157,6 @@ export const LoginForm = () => {
           onError={() => {
             setError('Google Login was cancelled or failed.');
           }}
-          useOneTap
           text="continue_with"
           theme="outline"
           size="large"
