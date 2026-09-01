@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminReviewsApi, IReviewQuery } from "@/features/admin/api/reviews.api";
 import { Button } from "@/components/ui/button";
-import { Trash2, Star, MessageSquare } from "lucide-react";
+import { Trash2, Star, MessageSquare, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -237,7 +237,7 @@ export default function AdminReviewsPage() {
                 onClick={confirmDelete}
                 disabled={deleteMutation.isPending}
               >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                {deleteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
               </Button>
             </div>
           </div>

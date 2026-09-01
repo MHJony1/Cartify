@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminCouponsApi, ICoupon, CouponPayload } from "@/features/admin/api/coupons.api";
 import { Button } from "@/components/ui/button";
 import { CouponForm } from "./components/CouponForm";
-import { Edit, Trash2, Plus, Ban, CheckCircle2, Ticket } from "lucide-react";
+import { Edit, Trash2, Plus, Ban, CheckCircle2, Ticket, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -285,7 +285,7 @@ export default function AdminCouponsPage() {
                 onClick={confirmDelete}
                 disabled={deleteMutation.isPending}
               >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                {deleteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
               </Button>
             </div>
           </div>

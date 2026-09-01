@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { inventoryApi } from '@/features/admin/api/inventory.api';
 import { toast } from 'react-toastify';
-import { X, PackagePlus, AlertOctagon, SlidersHorizontal } from 'lucide-react';
+import { X, PackagePlus, AlertOctagon, SlidersHorizontal, Loader2 } from 'lucide-react';
 
 export type AdjustmentType = 'RESTOCK' | 'DAMAGE' | 'ADJUST';
 
@@ -144,7 +144,7 @@ export default function StockAdjustmentModal({
               Cancel
             </Button>
             <Button type="submit" disabled={mutation.isPending} variant={type === 'DAMAGE' ? 'destructive' : 'default'}>
-              {mutation.isPending ? 'Saving...' : 'Confirm'}
+              {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Confirm'}
             </Button>
           </div>
         </form>

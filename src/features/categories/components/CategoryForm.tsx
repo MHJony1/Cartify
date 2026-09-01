@@ -10,6 +10,7 @@ import { Category } from "@/features/products/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 
 const categorySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -123,7 +124,7 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
           </Button>
         )}
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : initialData ? "Update Category" : "Create Category"}
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : initialData ? "Update Category" : "Create Category"}
         </Button>
       </div>
     </form>

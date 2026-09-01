@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { productsApi } from '@/features/products/api/products.api';
 import { ProductCard } from '@/features/products/components/ProductCard';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function BestSellersSection() {
   const [mounted, setMounted] = useState(false);
@@ -31,7 +32,11 @@ export function BestSellersSection() {
         {isLoading || !mounted ? (
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="aspect-[3/4] w-full animate-pulse bg-muted" />
+              <div key={n} className="flex flex-col gap-2">
+                <Skeleton className="aspect-[3/4] w-full rounded-none" />
+                <Skeleton className="h-4 w-3/4 mt-2" />
+                <Skeleton className="h-4 w-1/4" />
+              </div>
             ))}
           </div>
         ) : isError ? (

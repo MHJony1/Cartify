@@ -6,6 +6,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ICoupon, CouponPayload } from "@/features/admin/api/coupons.api";
+import { Loader2 } from "lucide-react";
 
 const couponSchema = z.object({
   code: z.string().min(3, "Code must be at least 3 characters").max(50),
@@ -174,7 +175,7 @@ export function CouponForm({ initialData, onSubmit, isSubmitting, onCancel }: Co
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save Coupon"}
+          {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Coupon"}
         </Button>
       </div>
     </form>

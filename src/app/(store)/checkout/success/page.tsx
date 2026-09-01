@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle2, ShoppingBag, ArrowRight, Loader2 } from "lucide-react";
 
 function SuccessContent() {
@@ -42,7 +43,7 @@ function SuccessContent() {
 export default function CheckoutSuccessPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4 bg-muted/10">
-      <Suspense fallback={<div className="animate-pulse w-96 h-[400px] bg-muted/20 border border-border/50 rounded-2xl flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
+      <Suspense fallback={<Skeleton className="w-96 h-[400px] rounded-2xl flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></Skeleton>}>
         <SuccessContent />
       </Suspense>
     </div>

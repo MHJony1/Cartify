@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import { Category } from "@/features/products/types";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2, AlertCircle } from "lucide-react";
+import { Plus, Pencil, Trash2, AlertCircle, Loader2 } from "lucide-react";
 import { CategoryForm } from "@/features/categories/components/CategoryForm";
 import { toast } from "react-toastify";
 import {
@@ -165,7 +165,7 @@ export default function AdminCategoriesPage() {
                 onClick={() => handleDelete(deleteConfirmId)} 
                 disabled={deleteMutation.isPending}
               >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                {deleteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
               </Button>
             </div>
           </div>

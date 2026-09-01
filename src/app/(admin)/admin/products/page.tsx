@@ -8,7 +8,7 @@ import { productsApi } from "@/features/products/api/products.api";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Pencil, Trash2, Search, Filter, AlertCircle, Eye } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Filter, AlertCircle, Eye, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { Product } from "@/features/products/types";
 import { env } from "@/config/env";
@@ -311,7 +311,7 @@ export default function AdminProductsPage() {
                 onClick={() => deleteMutation.mutate(deleteConfirmId)} 
                 disabled={deleteMutation.isPending}
               >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                {deleteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
               </Button>
             </div>
           </div>

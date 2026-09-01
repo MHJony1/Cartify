@@ -104,7 +104,7 @@ export default function ProfilePage() {
                 disabled={isUploading || updateProfileMutation.isPending}
               >
                 {isUploading ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Uploading...</>
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /></>
                 ) : "Change Image"}
               </Button>
               <input 
@@ -156,7 +156,7 @@ export default function ProfilePage() {
               disabled={!isDirty || updateProfileMutation.isPending}
             >
               {updateProfileMutation.isPending ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /></>
               ) : "Save Changes"}
             </Button>
           </div>

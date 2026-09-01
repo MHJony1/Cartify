@@ -284,7 +284,7 @@ export function ProductForm({ initialData, onSuccess, onCancel }: ProductFormPro
               />
               <label htmlFor="image-upload">
                 <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 cursor-pointer w-full sm:w-auto">
-                  {uploading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading...</> : <><Upload className="w-4 h-4 mr-2" /> Upload Image</>}
+                  {uploading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /></> : <><Upload className="w-4 h-4 mr-2" /> Upload Image</>}
                 </span>
               </label>
             </div>
@@ -392,13 +392,7 @@ export function ProductForm({ initialData, onSuccess, onCancel }: ProductFormPro
           </Button>
         )}
         <Button type="submit" size="lg" disabled={isPending}>
-          {isPending ? (
-            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
-          ) : initialData ? (
-            "Save Changes"
-          ) : (
-            "Create Product"
-          )}
+          {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /></> : initialData ? "Update Product" : "Create Product"}
         </Button>
       </div>
     </form>

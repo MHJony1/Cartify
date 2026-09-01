@@ -12,7 +12,7 @@ import { paymentApi } from "@/features/payment/api/payment.api";
 import { cartApi } from "@/features/cart/api/cart.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Check, Plus, CreditCard, Wallet } from "lucide-react";
+import { AlertCircle, Check, Plus, CreditCard, Wallet, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { LoadingState } from "@/components/shared/LoadingState";
 
@@ -236,7 +236,7 @@ export default function CheckoutPage() {
                     onClick={() => addAddressMutation.mutate(newAddress)} 
                     disabled={addAddressMutation.isPending || !newAddress.name || !newAddress.addressLine}
                   >
-                    {addAddressMutation.isPending ? "Saving..." : "Save Address"}
+                    {addAddressMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Address"}
                   </Button>
                   {addresses.length > 0 && <Button variant="outline" className="uppercase tracking-widest text-xs h-12 px-8 rounded-none border-2 font-bold" onClick={() => setIsAddingAddress(false)}>Cancel</Button>}
                 </div>

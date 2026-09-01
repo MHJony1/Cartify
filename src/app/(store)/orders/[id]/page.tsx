@@ -9,6 +9,7 @@ import { ordersApi } from "@/features/orders/api/orders.api";
 import { ArrowLeft, MapPin, CreditCard, Package, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { LoadingState } from "@/components/shared/LoadingState";
 
 export default function OrderDetailsPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -34,11 +35,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
   });
 
   if (!mounted || isUserLoading || isOrderLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse w-12 h-12 bg-muted rounded-full" />
-      </div>
-    );
+    return <LoadingState fullScreen />;
   }
 
   if (isError || !order) {
