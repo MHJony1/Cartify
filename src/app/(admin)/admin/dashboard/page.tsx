@@ -6,6 +6,8 @@ import { adminApi } from "@/features/admin/api/admin.api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, ShoppingCart, Users, PackageSearch, AlertCircle, Package } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function AdminDashboardPage() {
   const { data: dashboardResponse, isLoading, isError } = useQuery({
@@ -48,9 +50,17 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
-        <p className="text-muted-foreground">Here is what's happening with your store today.</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
+          <p className="text-muted-foreground">Here is what's happening with your store today.</p>
+        </div>
+        <Link href="/admin/analytics">
+          <Button variant="outline" className="gap-2">
+            <PackageSearch className="w-4 h-4" />
+            View Detailed Analytics
+          </Button>
+        </Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
