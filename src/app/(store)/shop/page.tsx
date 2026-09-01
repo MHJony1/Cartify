@@ -235,7 +235,7 @@ function ShopContent() {
 
         {/* Results Count */}
         <div className="text-sm font-medium text-muted-foreground order-3 sm:order-1">
-          {isLoading ? <Skeleton className="h-5 w-24" /> : `${productsData?.meta?.total || 0} Results`}
+          {isLoading ? <Skeleton className="h-5 w-24" /> : isError ? null : `${productsData?.meta?.total || 0} Results`}
         </div>
 
         {/* Sort & Clear (Desktop) */}

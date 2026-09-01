@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, User, Heart, Package, LogOut, ChevronRight, MapPin } from 'lucide-react';
+import { Menu, User, Heart, Package, LogOut, ChevronRight, MapPin, LayoutDashboard } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser, useLogout } from '@/features/auth/hooks';
@@ -96,6 +96,14 @@ export function MobileNavigation() {
                     <Link href="/addresses" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors" onClick={() => setOpen(false)}>
                       <MapPin className="mr-4 h-5 w-5 text-muted-foreground" /> Addresses
                     </Link>
+                    {user.role === 'ADMIN' && (
+                      <>
+                        <div className="w-full h-px bg-border/50 my-1" />
+                        <Link href="/admin/dashboard" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors text-primary" onClick={() => setOpen(false)}>
+                          <LayoutDashboard className="mr-4 h-5 w-5 text-primary" /> Admin Dashboard
+                        </Link>
+                      </>
+                    )}
                   </div>
                   
                   <div className="pt-6 mt-2 border-t border-border/50">

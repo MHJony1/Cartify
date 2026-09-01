@@ -71,7 +71,7 @@ export default function AdminDashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats.totalRevenue?.toFixed(2) || "0.00"}</div>
+            <div className="text-2xl font-bold">${stats.overview?.totalRevenue?.toFixed(2) || "0.00"}</div>
           </CardContent>
         </Card>
 
@@ -82,7 +82,7 @@ export default function AdminDashboardPage() {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalOrders}</div>
+            <div className="text-2xl font-bold">{stats.overview?.totalOrders || 0}</div>
           </CardContent>
         </Card>
 
@@ -93,7 +93,7 @@ export default function AdminDashboardPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalUsers}</div>
+            <div className="text-2xl font-bold">{stats.overview?.totalUsers || 0}</div>
           </CardContent>
         </Card>
 
@@ -104,7 +104,7 @@ export default function AdminDashboardPage() {
             <PackageSearch className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProducts}</div>
+            <div className="text-2xl font-bold">{stats.overview?.totalProducts || 0}</div>
           </CardContent>
         </Card>
       </div>
@@ -120,15 +120,15 @@ export default function AdminDashboardPage() {
           <CardContent>
             <div className="flex items-center justify-between py-2 border-b border-border/50">
               <span className="text-muted-foreground">Pending</span>
-              <span className="font-semibold">{stats.orders.pending}</span>
+              <span className="font-semibold">{stats.orders?.pending || 0}</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-border/50">
               <span className="text-muted-foreground">Processing</span>
-              <span className="font-semibold">{stats.orders.processing}</span>
+              <span className="font-semibold">{stats.orders?.processing || 0}</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-border/50">
               <span className="text-muted-foreground">Cancelled</span>
-              <span className="font-semibold">{stats.orders.cancelled}</span>
+              <span className="font-semibold">{stats.orders?.cancelled || 0}</span>
             </div>
           </CardContent>
         </Card>
@@ -143,11 +143,11 @@ export default function AdminDashboardPage() {
           <CardContent>
             <div className="flex items-center justify-between py-2 border-b border-border/50">
               <span className="text-muted-foreground">Low Stock Items</span>
-              <span className="font-semibold text-orange-500">{stats.inventory.lowStock}</span>
+              <span className="font-semibold text-orange-500">{stats.overview?.lowStockProducts || 0}</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-border/50">
               <span className="text-muted-foreground">Out of Stock</span>
-              <span className="font-semibold text-destructive">{stats.inventory.outOfStock}</span>
+              <span className="font-semibold text-destructive">{stats.overview?.outOfStockProducts || 0}</span>
             </div>
           </CardContent>
         </Card>

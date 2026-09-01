@@ -12,6 +12,7 @@ import { wishlistApi } from "@/features/wishlist/api/wishlist.api";
 import { reviewsApi } from "@/features/reviews/api/reviews.api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { env } from "@/config/env";
 
 // ----------------------------------------------------------------------
 // Reviews Section (Refactored for Phase 5E)
@@ -378,7 +379,11 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
                     selectedImage === img.url ? "border-b-2 border-foreground opacity-100" : "opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <img src={img.url} alt={img.altText || product.name} className="w-full h-full object-cover" />
+                  <img 
+                    src={img.url.startsWith("http") ? img.url : `${env.NEXT_PUBLIC_API_URL.replace("/api/v1", "")}${img.url.startsWith("/") ? "" : "/"}${img.url}`} 
+                    alt={img.altText || product.name} 
+                    className="w-full h-full object-cover" 
+                  />
                 </button>
               ))}
             </div>
@@ -388,7 +393,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
           <div className="relative aspect-[3/4] w-full bg-muted overflow-hidden flex-1 group">
             {selectedImage ? (
               <img 
-                src={selectedImage} 
+                src={selectedImage.startsWith("http") ? selectedImage : `${env.NEXT_PUBLIC_API_URL.replace("/api/v1", "")}${selectedImage.startsWith("/") ? "" : "/"}${selectedImage}`} 
                 alt={product.name} 
                 className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
               />

@@ -4,10 +4,16 @@ export interface DashboardOverviewResponse {
   success: boolean;
   message: string;
   data: {
-    totalUsers: number;
-    totalProducts: number;
-    totalCategories: number;
-    totalOrders: number;
+    overview: {
+      totalUsers: number;
+      totalProducts: number;
+      totalCategories: number;
+      totalOrders: number;
+      totalRevenue: number;
+      lowStockProducts: number;
+      outOfStockProducts: number;
+      totalReviews: number;
+    };
     orders: {
       pending: number;
       processing: number;
@@ -22,12 +28,9 @@ export interface DashboardOverviewResponse {
       failed: number;
       refunded: number;
     };
-    totalRevenue: number;
-    inventory: {
-      lowStock: number;
-      outOfStock: number;
-    };
-    totalReviews: number;
+    recentOrders: any[];
+    recentUsers: any[];
+    inventoryAlerts: any[];
   };
 }
 

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from '@/features/auth/hooks';
 import { wishlistApi } from '@/features/wishlist/api/wishlist.api';
+import { env } from '@/config/env';
 
 export interface ProductCardProps {
   id: string;
@@ -83,8 +84,15 @@ export function ProductCard({
 
   const discount = displayOriginalPrice ? Math.round(((displayOriginalPrice - displayPrice) / displayOriginalPrice) * 100) : 0;
 
-  const displayImage1 = images && images.length > 0 ? images[0].url : image || '';
-  const displayImage2 = images && images.length > 1 ? images[1].url : displayImage1;
+  const getFormattedImage = (rawUrl: string | undefined) => {
+    if (!rawUrl) return "https://placehold.co/400x533?text=No+Image";
+    if (rawUrl.startsWith("http")) return rawUrl;
+    const baseUrl = env.NEXT_PUBLIC_API_URL.replace("/api/v1", "");
+    return `${baseUrl}${rawUrl.startsWith("/") ? "" : "/"}${rawUrl}`;
+  };
+
+  const displayImage1 = getFormattedImage(images && images.length > 0 ? images[0].url : image);
+  const displayImage2 = getFormattedImage(images && images.length > 1 ? images[1].url : (images && images.length > 0 ? images[0].url : image));
   const productLink = slug ? `/products/${slug}` : `/products/${id}`;
 
   return (

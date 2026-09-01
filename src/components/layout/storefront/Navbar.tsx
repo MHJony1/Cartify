@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, ShoppingBag, Heart, User, X, LogOut, Package, Heart as HeartIcon, ChevronRight, MapPin } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, X, LogOut, Package, Heart as HeartIcon, ChevronRight, MapPin, Bell, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,8 @@ import { productsApi } from '@/features/products/api/products.api';
 import { Product } from '@/features/products/types';
 import { MiniCart } from '@/features/cart/components/MiniCart';
 import { Avatar } from '@/components/ui/avatar';
+import { useQuery } from '@tanstack/react-query';
+import { notificationsApi } from '@/features/notifications/api/notifications.api';
 
 const MEGA_MENU = [
   {
@@ -118,6 +120,13 @@ export function Navbar() {
   // Auth State
   const { data: user, isLoading: isUserLoading } = useCurrentUser();
   const logoutMutation = useLogout();
+  
+  const { data: unreadNotificationsCount } = useQuery({
+    queryKey: ['notifications-count'],
+    queryFn: () => notificationsApi.getUnreadCount(),
+    enabled: !!user && !isUserLoading,
+    refetchInterval: 30000,
+  });
 
   // Search State
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -424,6 +433,14 @@ export function Navbar() {
                       <Link href="/addresses" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
                         <MapPin className="mr-3 h-4 w-4 text-muted-foreground" /> Addresses
                       </Link>
+                      {user.role === 'ADMIN' && (
+                        <>
+                          <div className="border-t border-border/50 my-1"></div>
+                          <Link href="/admin/dashboard" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors text-primary font-medium" onClick={() => setIsAccountOpen(false)}>
+                            <LayoutDashboard className="mr-3 h-4 w-4" /> Admin Dashboard
+                          </Link>
+                        </>
+                      )}
                       <div className="border-t border-border/50 mt-2 pt-2">
                         <button 
                           className="flex w-full items-center px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
@@ -459,6 +476,21 @@ export function Navbar() {
                 <span className="sr-only">Wishlist</span>
               </Button>
             </Link>
+
+            {/* Notifications */}
+            {user && !isUserLoading && (
+              <Link href="/notifications">
+                <Button variant="ghost" size="icon" className="relative hidden sm:flex text-muted-foreground hover:text-foreground">
+                  <Bell className="h-5 w-5" />
+                  {(unreadNotificationsCount || 0) > 0 && (
+                    <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]">
+                      {unreadNotificationsCount}
+                    </Badge>
+                  )}
+                  <span className="sr-only">Notifications</span>
+                </Button>
+              </Link>
+            )}
 
             {/* Cart */}
             <MiniCart />

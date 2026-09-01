@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Pencil, Trash2, Search, Filter, AlertCircle, Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import { Product } from "@/features/products/types";
+import { env } from "@/config/env";
 
 export default function AdminProductsPage() {
   const router = useRouter();
@@ -76,7 +77,12 @@ export default function AdminProductsPage() {
 
   const getPrimaryImage = (product: Product) => {
     const primary = product.images?.find(i => i.isPrimary);
-    return primary?.url || product.images?.[0]?.url || "https://placehold.co/100x100?text=No+Image";
+    const rawUrl = primary?.url || product.images?.[0]?.url || "";
+    if (!rawUrl) return "https://placehold.co/100x100?text=No+Image";
+    if (rawUrl.startsWith("http")) return rawUrl;
+    // Backend API URL might be http://localhost:5000/api/v1, we need http://localhost:5000 for /uploads
+    const baseUrl = env.NEXT_PUBLIC_API_URL.replace("/api/v1", "");
+    return `${baseUrl}${rawUrl.startsWith("/") ? "" : "/"}${rawUrl}`;
   };
 
   const getStockStatus = (product: Product) => {
