@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { CreateAddressPayload, Address } from "../api/address.api";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 
 interface AddressFormProps {
   open: boolean;
@@ -124,7 +125,9 @@ export function AddressForm({ open, onOpenChange, onSubmit, isSubmitting, initia
 
             <div className="flex gap-4 pt-4 border-t border-border/40">
               <Button type="submit" disabled={isSubmitting} className="flex-1 uppercase tracking-widest text-xs font-bold rounded-none h-12">
-                {isSubmitting ? "Saving..." : initialData ? "Update Address" : "Add Address"}
+                {isSubmitting ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
+                ) : initialData ? "Update Address" : "Add Address"}
               </Button>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1 uppercase tracking-widest text-xs font-bold rounded-none h-12 border-2">
                 Cancel

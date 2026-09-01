@@ -35,31 +35,31 @@ export interface CouponPayload {
 
 export const adminCouponsApi = {
   getCoupons: async (): Promise<ICoupon[]> => {
-    const response = await apiClient.get<{ data: ICoupon[] }>("/admin/coupons");
+    const response = await apiClient.get<{ data: ICoupon[] }>("/coupons");
     return response.data.data;
   },
 
   getCouponById: async (id: string): Promise<ICoupon> => {
-    const response = await apiClient.get<{ data: ICoupon }>(`/admin/coupons/${id}`);
+    const response = await apiClient.get<{ data: ICoupon }>(`/coupons/${id}`);
     return response.data.data;
   },
 
   createCoupon: async (payload: CouponPayload): Promise<ICoupon> => {
-    const response = await apiClient.post<{ data: ICoupon }>("/admin/coupons", payload);
+    const response = await apiClient.post<{ data: ICoupon }>("/coupons", payload);
     return response.data.data;
   },
 
   updateCoupon: async (id: string, payload: Partial<CouponPayload>): Promise<ICoupon> => {
-    const response = await apiClient.patch<{ data: ICoupon }>(`/admin/coupons/${id}`, payload);
+    const response = await apiClient.patch<{ data: ICoupon }>(`/coupons/${id}`, payload);
     return response.data.data;
   },
 
   deleteCoupon: async (id: string): Promise<void> => {
-    await apiClient.delete(`/admin/coupons/${id}`);
+    await apiClient.delete(`/coupons/${id}`);
   },
 
   toggleStatus: async (id: string): Promise<ICoupon> => {
-    const response = await apiClient.patch<{ data: ICoupon }>(`/admin/coupons/${id}/toggle-status`);
+    const response = await apiClient.patch<{ data: ICoupon }>(`/coupons/${id}/toggle-status`);
     return response.data.data;
   },
 };

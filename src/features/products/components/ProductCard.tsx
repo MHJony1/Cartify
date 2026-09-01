@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Heart } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -130,7 +130,7 @@ export function ProductCard({
         </div>
 
         {/* Wishlist Button */}
-        <div className={`absolute right-2 top-2 z-10 transition-opacity duration-300 ${isWishlisted ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+        <div className={`absolute right-2 top-2 z-10 transition-opacity duration-300 ${isWishlisted || toggleWishlistMutation.isPending ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
           <Button 
             variant="secondary" 
             size="icon" 
@@ -138,7 +138,11 @@ export function ProductCard({
             onClick={handleWishlistClick}
             disabled={toggleWishlistMutation.isPending}
           >
-            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-destructive text-destructive' : ''}`} />
+            {toggleWishlistMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-destructive text-destructive' : ''}`} />
+            )}
             <span className="sr-only">{isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}</span>
           </Button>
         </div>

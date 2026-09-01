@@ -37,22 +37,22 @@ export interface PaginatedUserResponse {
 
 export const usersApi = {
   adminGetAllUsers: async (params?: GetUsersParams) => {
-    const response = await apiClient.get<{ data: PaginatedUserResponse }>('/users/admin', { params });
+    const response = await apiClient.get<{ data: PaginatedUserResponse }>('/auth/admin', { params });
     return response.data.data;
   },
 
   adminGetSingleUser: async (id: string) => {
-    const response = await apiClient.get<{ data: User }>(`/users/admin/${id}`);
+    const response = await apiClient.get<{ data: User }>(`/auth/admin/${id}`);
     return response.data.data;
   },
 
   adminUpdateUserStatus: async ({ id, status }: { id: string; status: string }) => {
-    const response = await apiClient.patch<{ data: User }>(`/users/admin/${id}/status`, { status });
+    const response = await apiClient.patch<{ data: User }>(`/auth/admin/${id}/status`, { status });
     return response.data.data;
   },
 
   adminUpdateUserRole: async ({ id, role }: { id: string; role: string }) => {
-    const response = await apiClient.patch<{ data: User }>(`/users/admin/${id}/role`, { role });
+    const response = await apiClient.patch<{ data: User }>(`/auth/admin/${id}/role`, { role });
     return response.data.data;
   },
 };

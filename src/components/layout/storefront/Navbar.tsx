@@ -422,7 +422,7 @@ export function Navbar() {
                         <p className="text-xs text-muted-foreground truncate mt-0.5">{user.email}</p>
                       </div>
                       <Link href="/profile" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
-                        <User className="mr-3 h-4 w-4 text-muted-foreground" /> Profile
+                        <LayoutDashboard className="mr-3 h-4 w-4 text-muted-foreground" /> Dashboard
                       </Link>
                       <Link href="/orders" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
                         <Package className="mr-3 h-4 w-4 text-muted-foreground" /> Orders
@@ -432,6 +432,9 @@ export function Navbar() {
                       </Link>
                       <Link href="/addresses" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
                         <MapPin className="mr-3 h-4 w-4 text-muted-foreground" /> Addresses
+                      </Link>
+                      <Link href="/profile/settings" className="flex items-center px-4 py-2.5 text-sm hover:bg-muted transition-colors" onClick={() => setIsAccountOpen(false)}>
+                        <User className="mr-3 h-4 w-4 text-muted-foreground" /> Settings
                       </Link>
                       {user.role === 'ADMIN' && (
                         <>

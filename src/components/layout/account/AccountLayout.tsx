@@ -8,10 +8,11 @@ import { useCurrentUser } from "@/features/auth/hooks";
 import { Avatar } from "@/components/ui/avatar";
 
 const NAV_ITEMS = [
-  { href: "/profile", label: "Overview", icon: User },
+  { href: "/profile", label: "Dashboard", icon: User },
   { href: "/orders", label: "Orders", icon: Package },
   { href: "/wishlist", label: "Wishlist", icon: Heart },
   { href: "/addresses", label: "Addresses", icon: MapPin },
+  { href: "/profile/settings", label: "Settings", icon: Settings },
 ];
 
 export function AccountLayout({ children }: { children: React.ReactNode }) {

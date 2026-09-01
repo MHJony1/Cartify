@@ -10,7 +10,7 @@ import { categoriesApi } from "@/features/categories/api/categories.api";
 import { Product } from "@/features/products/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, X, Upload, CheckCircle } from "lucide-react";
+import { Plus, Trash2, X, Upload, CheckCircle, Loader2, Link as LinkIcon } from "lucide-react";
 import { toast } from "react-toastify";
 
 const variantSchema = z.object({
@@ -53,6 +53,7 @@ interface ProductFormProps {
 export function ProductForm({ initialData, onSuccess, onCancel }: ProductFormProps) {
   const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState("");
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -163,6 +164,23 @@ export function ProductForm({ initialData, onSuccess, onCancel }: ProductFormPro
     }
   };
 
+  const handleAddImageUrl = () => {
+    if (!imageUrlInput) return;
+    try {
+      new URL(imageUrlInput); // Simple validation
+      appendImage({
+        url: imageUrlInput,
+        altText: "",
+        sortOrder: imageFields.length,
+        isPrimary: imageFields.length === 0,
+      });
+      setImageUrlInput("");
+      toast.success("Image URL added!");
+    } catch {
+      toast.error("Please enter a valid URL");
+    }
+  };
+
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
@@ -239,22 +257,37 @@ export function ProductForm({ initialData, onSuccess, onCancel }: ProductFormPro
 
       {/* Images */}
       <div className="bg-background border border-border p-6 rounded-lg shadow-sm space-y-4">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
           <h2 className="text-xl font-bold tracking-tight">Images</h2>
-          <div>
-            <input 
-              type="file" 
-              id="image-upload" 
-              className="hidden" 
-              accept="image/*"
-              onChange={handleImageUpload}
-              disabled={uploading}
-            />
-            <label htmlFor="image-upload">
-              <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 cursor-pointer">
-                {uploading ? "Uploading..." : <><Upload className="w-4 h-4 mr-2" /> Upload Image</>}
-              </span>
-            </label>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="flex w-full sm:w-auto items-center">
+              <Input 
+                placeholder="https://example.com/image.jpg" 
+                value={imageUrlInput}
+                onChange={(e) => setImageUrlInput(e.target.value)}
+                className="rounded-r-none focus-visible:ring-0 focus-visible:ring-offset-0 border-r-0 h-9"
+              />
+              <Button type="button" onClick={handleAddImageUrl} variant="secondary" className="rounded-l-none border border-input h-9 px-3">
+                <LinkIcon className="w-4 h-4 mr-2" /> Add URL
+              </Button>
+            </div>
+            
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground mr-3 hidden sm:inline">or</span>
+              <input 
+                type="file" 
+                id="image-upload" 
+                className="hidden" 
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={uploading}
+              />
+              <label htmlFor="image-upload">
+                <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 cursor-pointer w-full sm:w-auto">
+                  {uploading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading...</> : <><Upload className="w-4 h-4 mr-2" /> Upload Image</>}
+                </span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -359,7 +392,13 @@ export function ProductForm({ initialData, onSuccess, onCancel }: ProductFormPro
           </Button>
         )}
         <Button type="submit" size="lg" disabled={isPending}>
-          {isPending ? "Saving..." : initialData ? "Save Changes" : "Create Product"}
+          {isPending ? (
+            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
+          ) : initialData ? (
+            "Save Changes"
+          ) : (
+            "Create Product"
+          )}
         </Button>
       </div>
     </form>

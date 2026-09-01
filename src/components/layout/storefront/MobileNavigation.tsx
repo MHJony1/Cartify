@@ -85,7 +85,7 @@ export function MobileNavigation() {
                   
                   <div className="flex flex-col gap-2">
                     <Link href="/profile" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors" onClick={() => setOpen(false)}>
-                      <User className="mr-4 h-5 w-5 text-muted-foreground" /> Profile
+                      <LayoutDashboard className="mr-4 h-5 w-5 text-muted-foreground" /> Dashboard
                     </Link>
                     <Link href="/orders" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors" onClick={() => setOpen(false)}>
                       <Package className="mr-4 h-5 w-5 text-muted-foreground" /> Orders
@@ -95,6 +95,9 @@ export function MobileNavigation() {
                     </Link>
                     <Link href="/addresses" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors" onClick={() => setOpen(false)}>
                       <MapPin className="mr-4 h-5 w-5 text-muted-foreground" /> Addresses
+                    </Link>
+                    <Link href="/profile/settings" className="flex items-center py-2 text-base font-medium hover:text-primary transition-colors" onClick={() => setOpen(false)}>
+                      <User className="mr-4 h-5 w-5 text-muted-foreground" /> Settings
                     </Link>
                     {user.role === 'ADMIN' && (
                       <>
