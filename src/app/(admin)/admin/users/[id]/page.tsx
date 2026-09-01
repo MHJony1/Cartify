@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { toast } from "react-toastify";
 import { Avatar } from "@/components/ui/avatar";
 import { useCurrentUser } from "@/features/auth/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UserDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -78,18 +79,18 @@ export default function AdminUserDetailsPage({ params }: UserDetailsPageProps) {
     return (
       <div className="space-y-6 max-w-5xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.push("/admin/users")}>
+          <Button variant="ghost" size="icon" disabled>
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div className="h-8 w-64 bg-muted animate-pulse rounded"></div>
+          <Skeleton className="h-8 w-64 rounded" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="h-48 bg-muted animate-pulse rounded-lg"></div>
-            <div className="h-48 bg-muted animate-pulse rounded-lg"></div>
+            <Skeleton className="h-48 w-full rounded-lg" />
+            <Skeleton className="h-48 w-full rounded-lg" />
           </div>
           <div className="space-y-6">
-            <div className="h-48 bg-muted animate-pulse rounded-lg"></div>
+            <Skeleton className="h-48 w-full rounded-lg" />
           </div>
         </div>
       </div>

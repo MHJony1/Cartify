@@ -4,7 +4,7 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { CheckCircle2, ShoppingBag, ArrowRight } from "lucide-react";
+import { CheckCircle2, ShoppingBag, ArrowRight, Loader2 } from "lucide-react";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -30,7 +30,7 @@ function SuccessContent() {
 
       <div className="flex flex-col w-full gap-3">
         {/* We will build Order History in Phase 4 */}
-        <Link href="/products" className={buttonVariants({ size: "lg" })}>
+        <Link href="/shop" className={buttonVariants({ size: "lg" })}>
           <ShoppingBag className="mr-2 h-4 w-4" />
           Continue Shopping
         </Link>
@@ -42,7 +42,7 @@ function SuccessContent() {
 export default function CheckoutSuccessPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4 bg-muted/10">
-      <Suspense fallback={<div className="animate-pulse w-96 h-96 bg-muted rounded-2xl" />}>
+      <Suspense fallback={<div className="animate-pulse w-96 h-[400px] bg-muted/20 border border-border/50 rounded-2xl flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
         <SuccessContent />
       </Suspense>
     </div>

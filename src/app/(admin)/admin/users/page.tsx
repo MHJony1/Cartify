@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Eye, AlertCircle, Search } from "lucide-react";
 import { format } from "date-fns";
 import { Avatar } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 // Simple debounce hook for search
 function useDebounce<T>(value: T, delay: number): T {
@@ -122,26 +124,32 @@ export default function AdminUsersPage() {
 
       <div className="bg-background rounded-lg border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground animate-pulse">Loading users...</div>
+          <div className="p-4 space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full" />
+            ))}
+          </div>
         ) : isError ? (
           <div className="p-8 text-center text-destructive flex flex-col items-center gap-2">
             <AlertCircle className="w-8 h-8" />
             <p>Failed to load users.</p>
           </div>
         ) : !usersData?.data || usersData.data.length === 0 ? (
-          <div className="p-12 text-center flex flex-col items-center justify-center">
-            <p className="text-lg font-medium">No users found</p>
-            <p className="text-muted-foreground mt-1 mb-4">Try adjusting your search or filters.</p>
-            {(search || status || role) && (
-              <Button variant="outline" onClick={() => {
-                setSearchInput("");
-                setStatus("");
-                setRole("");
-              }}>
-                Reset Filters
-              </Button>
-            )}
-          </div>
+          <EmptyState 
+            title="No users found" 
+            message="Try adjusting your search or filters."
+            action={
+              (search || status || role) ? (
+                <Button variant="outline" onClick={() => {
+                  setSearchInput("");
+                  setStatus("");
+                  setRole("");
+                }}>
+                  Reset Filters
+                </Button>
+              ) : undefined
+            }
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">

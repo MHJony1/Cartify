@@ -8,6 +8,8 @@ import { ordersApi } from "@/features/orders/api/orders.api";
 import { Button } from "@/components/ui/button";
 import { Eye, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export default function AdminOrdersPage() {
   const router = useRouter();
@@ -111,17 +113,21 @@ export default function AdminOrdersPage() {
 
       <div className="bg-background rounded-lg border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground animate-pulse">Loading orders...</div>
+          <div className="p-4 space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
+          </div>
         ) : isError ? (
           <div className="p-8 text-center text-destructive flex flex-col items-center gap-2">
             <AlertCircle className="w-8 h-8" />
             <p>Failed to load orders.</p>
           </div>
         ) : !ordersData?.data || ordersData.data.length === 0 ? (
-          <div className="p-12 text-center flex flex-col items-center justify-center">
-            <p className="text-lg font-medium">No orders found</p>
-            <p className="text-muted-foreground mt-1 mb-4">Try adjusting your filters.</p>
-          </div>
+          <EmptyState 
+            title="No orders found" 
+            message="Try adjusting your filters or wait for new orders."
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">

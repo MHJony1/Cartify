@@ -8,6 +8,8 @@ import { CouponForm } from "./components/CouponForm";
 import { Edit, Trash2, Plus, Ban, CheckCircle2, Ticket } from "lucide-react";
 import { toast } from "react-toastify";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export default function AdminCouponsPage() {
   const queryClient = useQueryClient();
@@ -146,11 +148,17 @@ export default function AdminCouponsPage() {
 
       <div className="bg-background rounded-lg border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground animate-pulse">Loading coupons...</div>
-        ) : paginatedCoupons.length === 0 ? (
-          <div className="p-12 text-center text-muted-foreground">
-            No coupons found.
+          <div className="p-4 space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full" />
+            ))}
           </div>
+        ) : paginatedCoupons.length === 0 ? (
+          <EmptyState 
+            title="No coupons found" 
+            message="You don't have any coupons yet, or none match your search."
+            action={<Button onClick={openCreateDialog} variant="outline">Create Coupon</Button>}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">

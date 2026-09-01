@@ -2,6 +2,7 @@ import { LoginForm } from '@/features/auth/components/LoginForm';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export const metadata = {
   title: 'Sign In | Cartify',
@@ -27,7 +28,7 @@ export default function LoginPage() {
       {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex p-8 sm:p-12 lg:p-24 xl:p-32 relative">
         <div className="w-full max-w-105 m-auto pt-16 lg:pt-0">
-          <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Loading...</div>}>
+          <Suspense fallback={<div className="w-full h-full min-h-[400px] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
             <LoginForm />
           </Suspense>
         </div>

@@ -21,6 +21,7 @@ import { useCurrentUser, useLogout } from "@/features/auth/hooks";
 import { Avatar } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { LoadingState } from "@/components/shared/LoadingState";
 
 const ADMIN_NAV = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -53,9 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (isLoading || !user || user.role !== "ADMIN") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-      </div>
+      <LoadingState fullScreen />
     );
   }
 

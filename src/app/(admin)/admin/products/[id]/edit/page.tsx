@@ -7,6 +7,7 @@ import { productsApi } from "@/features/products/api/products.api";
 import { ProductForm } from "@/features/admin/components/ProductForm";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, AlertCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface EditProductPageProps {
   params: Promise<{ id: string }>;
@@ -33,15 +34,15 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     return (
       <div className="space-y-6 max-w-4xl mx-auto">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={handleCancel}>
+          <Button variant="ghost" size="icon" disabled>
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div>
-            <div className="h-8 w-48 bg-muted animate-pulse rounded mb-2"></div>
-            <div className="h-4 w-64 bg-muted animate-pulse rounded"></div>
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48 rounded" />
+            <Skeleton className="h-4 w-64 rounded" />
           </div>
         </div>
-        <div className="h-[600px] w-full bg-muted animate-pulse rounded-lg border border-border"></div>
+        <Skeleton className="h-[600px] w-full rounded-lg" />
       </div>
     );
   }

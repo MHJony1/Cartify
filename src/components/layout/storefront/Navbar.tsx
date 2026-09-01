@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, ShoppingBag, Heart, User, X, LogOut, Package, Heart as HeartIcon, ChevronRight, MapPin, Bell, LayoutDashboard } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, X, LogOut, Package, Heart as HeartIcon, ChevronRight, MapPin, Bell, LayoutDashboard, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -343,7 +343,10 @@ export function Navbar() {
                       {searchQuery.trim() && (
                         <div className="absolute top-full left-0 right-0 mt-4 bg-background border border-border shadow-2xl max-h-[70vh] overflow-y-auto">
                           {isSearching ? (
-                            <div className="p-8 text-sm text-muted-foreground text-center animate-pulse tracking-widest uppercase">Searching...</div>
+                            <div className="p-12 flex flex-col items-center justify-center text-muted-foreground">
+                              <Loader2 className="h-6 w-6 animate-spin mb-3" />
+                              <span className="text-xs font-medium uppercase tracking-widest">Searching...</span>
+                            </div>
                           ) : searchResults.length > 0 ? (
                             <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                               {searchResults.map(product => (

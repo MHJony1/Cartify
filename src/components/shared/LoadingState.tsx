@@ -8,7 +8,7 @@ interface LoadingStateProps {
   fullScreen?: boolean;
 }
 
-export function LoadingState({ message = 'Loading...', className, fullScreen }: LoadingStateProps) {
+export function LoadingState({ message, className, fullScreen }: LoadingStateProps) {
   return (
     <div
       className={cn(
@@ -18,7 +18,7 @@ export function LoadingState({ message = 'Loading...', className, fullScreen }: 
       )}
     >
       <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-      <p className="text-sm">{message}</p>
+      {message && <p className="text-sm font-medium uppercase tracking-widest">{message}</p>}
     </div>
   );
 }

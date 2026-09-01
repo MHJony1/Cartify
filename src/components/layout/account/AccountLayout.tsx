@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { User, Package, Heart, MapPin, Settings } from "lucide-react";
 import { useCurrentUser } from "@/features/auth/hooks";
 import { Avatar } from "@/components/ui/avatar";
+import { LoadingState } from "@/components/shared/LoadingState";
 
 const NAV_ITEMS = [
   { href: "/profile", label: "Dashboard", icon: User },
@@ -22,7 +23,7 @@ export function AccountLayout({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-12 md:py-20 max-w-6xl min-h-[60vh] flex items-center justify-center">
-        <div className="animate-pulse w-32 h-32 bg-muted rounded-full" />
+        <LoadingState />
       </div>
     );
   }

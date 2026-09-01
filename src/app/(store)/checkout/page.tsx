@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Check, Plus, CreditCard, Wallet } from "lucide-react";
 import Link from "next/link";
+import { LoadingState } from "@/components/shared/LoadingState";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -163,7 +164,7 @@ export default function CheckoutPage() {
   };
 
   if (!mounted || isUserLoading || !user || cart.items.length === 0) {
-    return <div className="min-h-[60vh] flex items-center justify-center"><div className="animate-pulse w-32 h-32 bg-muted rounded-full" /></div>;
+    return <LoadingState fullScreen />;
   }
 
   return (

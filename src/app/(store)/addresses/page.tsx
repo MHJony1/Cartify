@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Plus, Edit2, Trash2, CheckCircle2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useCurrentUser } from "@/features/auth/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AddressesPage() {
   const { data: user } = useCurrentUser();
@@ -98,7 +99,7 @@ export default function AddressesPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[1, 2].map(i => (
-              <div key={i} className="h-48 bg-muted animate-pulse border border-border/50" />
+              <Skeleton key={i} className="h-48 w-full rounded-none" />
             ))}
           </div>
         ) : addresses.length === 0 ? (

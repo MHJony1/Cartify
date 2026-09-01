@@ -12,6 +12,8 @@ import { Plus, Pencil, Trash2, Search, Filter, AlertCircle, Eye } from "lucide-r
 import { toast } from "react-toastify";
 import { Product } from "@/features/products/types";
 import { env } from "@/config/env";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export default function AdminProductsPage() {
   const router = useRouter();
@@ -158,17 +160,26 @@ export default function AdminProductsPage() {
 
       <div className="bg-background rounded-lg border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground animate-pulse">Loading products...</div>
+          <div className="p-4 space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full" />
+            ))}
+          </div>
         ) : isError ? (
           <div className="p-8 text-center text-destructive flex flex-col items-center gap-2">
             <AlertCircle className="w-8 h-8" />
             <p>Failed to load products.</p>
           </div>
         ) : !productsData?.data || productsData.data.length === 0 ? (
-          <div className="p-12 text-center flex flex-col items-center justify-center">
-            <p className="text-lg font-medium">No products found</p>
-            <p className="text-muted-foreground mt-1 mb-4">Try adjusting your filters or add a new product.</p>
-          </div>
+          <EmptyState 
+            title="No products found" 
+            message="Try adjusting your filters or add a new product."
+            action={
+              <Link href="/admin/products/new">
+                <Button variant="outline">Add Product</Button>
+              </Link>
+            }
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">

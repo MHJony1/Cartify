@@ -6,6 +6,8 @@ import { adminReviewsApi, IReviewQuery } from "@/features/admin/api/reviews.api"
 import { Button } from "@/components/ui/button";
 import { Trash2, Star, MessageSquare } from "lucide-react";
 import { toast } from "react-toastify";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export default function AdminReviewsPage() {
   const queryClient = useQueryClient();
@@ -130,12 +132,17 @@ export default function AdminReviewsPage() {
 
       <div className="bg-background rounded-lg border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground animate-pulse">Loading reviews...</div>
-        ) : reviews.length === 0 ? (
-          <div className="p-12 text-center text-muted-foreground flex flex-col items-center justify-center gap-2">
-            <MessageSquare className="w-8 h-8 opacity-50" />
-            <p>No reviews found matching the selected criteria.</p>
+          <div className="p-4 space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full" />
+            ))}
           </div>
+        ) : reviews.length === 0 ? (
+          <EmptyState 
+            title="No reviews found" 
+            message="No reviews found matching the selected criteria."
+            icon={<MessageSquare className="h-10 w-10 text-muted-foreground/30" />}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">

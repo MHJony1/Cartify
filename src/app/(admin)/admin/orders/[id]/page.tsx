@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, AlertCircle, CheckCircle, Package, Truck, CreditCard, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface OrderDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -78,19 +79,19 @@ export default function AdminOrderDetailsPage({ params }: OrderDetailsPageProps)
     return (
       <div className="space-y-6 max-w-5xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.push("/admin/orders")}>
+          <Button variant="ghost" size="icon" disabled>
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div className="h-8 w-64 bg-muted animate-pulse rounded"></div>
+          <Skeleton className="h-8 w-64 rounded" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="h-64 bg-muted animate-pulse rounded-lg"></div>
-            <div className="h-64 bg-muted animate-pulse rounded-lg"></div>
+            <Skeleton className="h-64 w-full rounded-lg" />
+            <Skeleton className="h-64 w-full rounded-lg" />
           </div>
           <div className="space-y-6">
-            <div className="h-48 bg-muted animate-pulse rounded-lg"></div>
-            <div className="h-48 bg-muted animate-pulse rounded-lg"></div>
+            <Skeleton className="h-48 w-full rounded-lg" />
+            <Skeleton className="h-48 w-full rounded-lg" />
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { RegisterForm } from '@/features/auth/components/RegisterForm';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export const metadata = {
   title: 'Create Account | Cartify',
@@ -14,7 +15,7 @@ export default function RegisterPage() {
       {/* Left Side - Form */}
       <div className="w-full lg:w-1/2 flex p-8 sm:p-12 lg:p-24 xl:p-32 relative order-2 lg:order-1">
         <div className="w-full max-w-[420px] m-auto pt-16 lg:pt-0">
-          <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Loading...</div>}>
+          <Suspense fallback={<div className="w-full h-full min-h-[400px] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
             <RegisterForm />
           </Suspense>
         </div>

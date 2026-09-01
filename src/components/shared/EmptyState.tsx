@@ -13,20 +13,20 @@ interface EmptyStateProps {
 export function EmptyState({
   title = 'No results found',
   message = 'We could not find what you were looking for.',
-  icon = <FileQuestion className="h-10 w-10 text-muted-foreground" />,
+  icon = <FileQuestion className="h-10 w-10 text-muted-foreground/30" />,
   action,
   className,
 }: EmptyStateProps) {
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center p-12 text-center border rounded-lg border-dashed',
+        'flex flex-col items-center justify-center p-12 text-center border border-border/50 bg-muted/20',
         className
       )}
     >
       <div className="mb-4">{icon}</div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground mb-4 max-w-md">{message}</p>
+      <h3 className="text-sm font-bold uppercase tracking-widest mb-2">{title}</h3>
+      <p className="text-sm text-muted-foreground mb-6 max-w-md">{message}</p>
       {action && <div>{action}</div>}
     </div>
   );

@@ -8,6 +8,7 @@ import { wishlistApi } from "@/features/wishlist/api/wishlist.api";
 import { Button } from "@/components/ui/button";
 import { Trash2, Minus, Plus, ShoppingBag, Heart } from "lucide-react";
 import { useCurrentUser } from "@/features/auth/hooks";
+import { LoadingState } from "@/components/shared/LoadingState";
 
 export default function CartPage() {
   const [mounted, setMounted] = useState(false);
@@ -22,8 +23,8 @@ export default function CartPage() {
 
   if (!mounted) {
     return (
-      <div className="container mx-auto px-4 py-16 flex justify-center">
-        <div className="animate-pulse w-full max-w-6xl h-96 bg-muted/30" />
+      <div className="container mx-auto px-4 py-16 flex justify-center min-h-[60vh] items-center">
+        <LoadingState />
       </div>
     );
   }

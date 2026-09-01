@@ -14,6 +14,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export default function AdminCategoriesPage() {
   const queryClient = useQueryClient();
@@ -69,18 +71,24 @@ export default function AdminCategoriesPage() {
 
       <div className="bg-background rounded-lg border border-border shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground animate-pulse">Loading categories...</div>
+          <div className="p-4 space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <Skeleton className="h-12 w-full" />
+              </div>
+            ))}
+          </div>
         ) : isError ? (
           <div className="p-8 text-center text-destructive flex flex-col items-center gap-2">
             <AlertCircle className="w-8 h-8" />
             <p>Failed to load categories.</p>
           </div>
         ) : categories?.length === 0 ? (
-          <div className="p-12 text-center flex flex-col items-center justify-center">
-            <p className="text-lg font-medium">No categories found</p>
-            <p className="text-muted-foreground mt-1 mb-4">Get started by creating a new category.</p>
-            <Button onClick={handleCreate} variant="outline">Create Category</Button>
-          </div>
+          <EmptyState 
+            title="No categories found" 
+            message="Get started by creating a new category."
+            action={<Button onClick={handleCreate} variant="outline">Create Category</Button>}
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">

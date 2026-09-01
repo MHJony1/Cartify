@@ -6,3 +6,5 @@ export { PromoSection } from './components/PromoSection';
 export { BestSellersSection } from './components/BestSellersSection';
 export { BenefitsSection } from './components/BenefitsSection';
 export { NewsletterSection } from './components/NewsletterSection';
+
+
