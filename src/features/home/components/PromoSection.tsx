@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 export function PromoSection() {
   return (
     <section className="py-16 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden bg-muted h-[400px] md:h-[500px] flex items-center justify-center">
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"

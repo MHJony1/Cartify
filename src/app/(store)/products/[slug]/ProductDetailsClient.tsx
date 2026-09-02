@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { env } from "@/config/env";
 import { Product } from "@/features/products/types";
+import { toast } from "react-toastify";
+import { ProductCard } from "@/features/products/components/ProductCard";
 
 // ----------------------------------------------------------------------
 // Reviews Section
@@ -37,6 +39,7 @@ function ReviewsSection({ productId }: { productId: string }) {
       setComment("");
       setRating(5);
       setErrorMsg("");
+      toast.success("Review submitted successfully");
     },
     onError: (error: any) => {
       setErrorMsg(error.response?.data?.message || "Failed to submit review");
@@ -70,16 +73,24 @@ function ReviewsSection({ productId }: { productId: string }) {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
         {/* Left: Reviews List */}
         <div className="lg:col-span-8 space-y-8">
           {isLoading ? (
-            <div className="space-y-6">
-              <Skeleton className="h-32 w-full rounded-sm" />
-              <Skeleton className="h-32 w-full rounded-sm" />
+            <div className="space-y-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-4">
+                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                  <div className="space-y-2 w-full">
+                    <Skeleton className="h-4 w-1/4" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : reviews.length === 0 ? (
-            <div className="py-12 text-center bg-muted/20 border border-border/50 rounded-sm">
+            <div className="py-16 text-center bg-muted/20 border border-border/50 rounded-sm">
               <p className="text-muted-foreground">No reviews yet. Be the first to share your experience.</p>
             </div>
           ) : (
@@ -88,7 +99,7 @@ function ReviewsSection({ productId }: { productId: string }) {
                 <div key={review.id} className="pb-8 border-b border-border/50 last:border-0">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                      <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0">
                         {review.user.image ? <img src={review.user.image} className="w-full h-full object-cover" alt={review.user.name} /> : <User className="h-5 w-5 text-muted-foreground" />}
                       </div>
                       <div>
@@ -113,16 +124,17 @@ function ReviewsSection({ productId }: { productId: string }) {
         <div className="lg:col-span-4">
           <div className="sticky top-24">
             {user ? (
-              <div className="bg-muted/10 p-6 border border-border/50">
+              <div className="bg-muted/10 p-6 md:p-8 border border-border/50">
                 <h3 className="font-bold text-sm uppercase tracking-widest mb-6 border-b border-border/50 pb-4">Write a Review</h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {errorMsg && (
-                    <div className="p-3 bg-destructive/10 text-destructive text-sm border border-destructive/20">
+                    <div className="p-3 bg-destructive/10 text-destructive text-sm border border-destructive/20 rounded-sm">
+                      <AlertCircle className="h-4 w-4 inline mr-2 -mt-0.5" />
                       {errorMsg}
                     </div>
                   )}
                   <div>
-                    <label className="text-xs font-semibold uppercase tracking-widest mb-3 block">Overall Rating</label>
+                    <label className="text-xs font-semibold uppercase tracking-widest mb-3 block text-foreground/80">Overall Rating</label>
                     <div className="flex gap-2">
                       {[1, 2, 3, 4, 5].map(star => (
                         <button
@@ -131,13 +143,13 @@ function ReviewsSection({ productId }: { productId: string }) {
                           onClick={() => setRating(star)}
                           className="p-1 hover:scale-110 transition-transform focus:outline-none"
                         >
-                          <Star className={`h-5 w-5 ${star <= rating ? 'fill-primary text-primary' : 'text-muted-foreground/30'}`} />
+                          <Star className={`h-6 w-6 ${star <= rating ? 'fill-primary text-primary' : 'text-muted-foreground/30'}`} />
                         </button>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold uppercase tracking-widest mb-3 block">Your Experience (Optional)</label>
+                    <label className="text-xs font-semibold uppercase tracking-widest mb-3 block text-foreground/80">Your Experience (Optional)</label>
                     <textarea
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
@@ -145,7 +157,7 @@ function ReviewsSection({ productId }: { productId: string }) {
                       placeholder="What did you like or dislike?"
                     />
                   </div>
-                  <Button type="submit" className="w-full uppercase tracking-widest font-semibold rounded-none h-12" disabled={createReviewMutation.isPending}>
+                  <Button type="submit" className="w-full uppercase tracking-widest font-bold rounded-none h-12" disabled={createReviewMutation.isPending}>
                     {createReviewMutation.isPending ? (
                       <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</>
                     ) : (
@@ -170,6 +182,59 @@ function ReviewsSection({ productId }: { productId: string }) {
 }
 
 // ----------------------------------------------------------------------
+// Related Products Section
+// ----------------------------------------------------------------------
+function RelatedProducts({ categoryId, currentProductId }: { categoryId: string, currentProductId: string }) {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["related-products", categoryId],
+    queryFn: () => productsApi.getProducts({ categoryId, limit: 12 }),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="mt-24 pt-16 border-t border-border/50">
+        <h2 className="text-2xl font-black tracking-tighter uppercase mb-8">You May Also Like</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {[1, 2, 3, 4].map(i => (
+             <div key={i} className="space-y-3">
+               <Skeleton className="w-full aspect-[3/4] rounded-sm" />
+               <Skeleton className="w-2/3 h-4 rounded-sm" />
+               <Skeleton className="w-1/3 h-4 rounded-sm" />
+             </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !data?.data) return null;
+
+  const products = data.data.filter(p => p.id !== currentProductId).slice(0, 4);
+  
+  if (products.length === 0) return null;
+
+  return (
+    <div className="mt-24 pt-16 border-t border-border/50">
+      <h2 className="text-2xl font-black tracking-tighter uppercase mb-8">You May Also Like</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {products.map(product => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            name={product.name}
+            slug={product.slug}
+            price={product.price}
+            images={product.images}
+            variants={product.variants as any}
+            badge={product.brand || undefined}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
 // Main Product Details Client Component
 // ----------------------------------------------------------------------
 export function ProductDetailsClient({ slug, initialData }: { slug: string, initialData?: Product | null }) {
@@ -185,6 +250,7 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
   const [sizeError, setSizeError] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
   const [openAccordion, setOpenAccordion] = useState<string | null>("description");
+  const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -209,6 +275,7 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      if (!isWishlisted) toast.success("Added to wishlist");
     },
   });
 
@@ -290,35 +357,46 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
     if (!selectedVariant || !product) return;
     if (quantity > selectedVariant.stock) return;
     
-    addItemToCart({
-      productId: product.id,
-      variantId: selectedVariant.id,
-      name: product.name,
-      image: selectedImage || '',
-      size: selectedVariant.size,
-      color: selectedVariant.color,
-      sku: selectedVariant.sku,
-      price: selectedVariant.price,
-      quantity: quantity,
-      stock: selectedVariant.stock,
-    });
+    setIsAddingToCart(true);
+    
+    // Simulate short network delay for premium feel
+    setTimeout(() => {
+      addItemToCart({
+        productId: product.id,
+        variantId: selectedVariant.id,
+        name: product.name,
+        image: selectedImage || '',
+        size: selectedVariant.size,
+        color: selectedVariant.color,
+        sku: selectedVariant.sku,
+        price: selectedVariant.price,
+        quantity: quantity,
+        stock: selectedVariant.stock,
+      });
+      setIsAddingToCart(false);
+      toast.success("Added to cart");
+    }, 400);
   };
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-16 md:py-24 max-w-[1400px]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-          <div className="flex flex-col-reverse md:flex-row gap-4">
-            <div className="flex md:flex-col gap-4 overflow-x-auto md:w-20 shrink-0">
-              {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="w-20 h-24 rounded-none" />)}
+      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-10 md:py-16 max-w-[1400px]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-4">
+            <div className="flex md:flex-col gap-3 overflow-x-auto w-full md:w-20 lg:w-24 shrink-0">
+              {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="w-20 md:w-full aspect-[3/4] rounded-none shrink-0" />)}
             </div>
             <Skeleton className="w-full aspect-[3/4] rounded-none" />
           </div>
-          <div className="space-y-6 pt-10">
-            <Skeleton className="w-1/4 h-4" />
-            <Skeleton className="w-3/4 h-10" />
-            <Skeleton className="w-1/3 h-8" />
-            <Skeleton className="w-full h-32 mt-10" />
+          <div className="lg:col-span-5 space-y-8 pt-6">
+            <div className="space-y-4">
+              <Skeleton className="w-1/4 h-4" />
+              <Skeleton className="w-3/4 h-10" />
+              <Skeleton className="w-1/3 h-8" />
+            </div>
+            <Skeleton className="w-full h-px" />
+            <Skeleton className="w-1/2 h-16" />
+            <Skeleton className="w-full h-32" />
           </div>
         </div>
       </div>
@@ -327,7 +405,7 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
 
   if (isError || !product) {
     return (
-      <div className="container mx-auto px-4 py-32 text-center max-w-2xl">
+      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-32 text-center max-w-2xl">
         <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-6" />
         <h2 className="text-3xl font-black tracking-tighter uppercase mb-4">Product Not Found</h2>
         <p className="text-muted-foreground mb-8">The product you are looking for does not exist or has been removed from our catalog.</p>
@@ -350,13 +428,14 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
     const colors: Record<string, string> = {
       'black': '#000000', 'white': '#ffffff', 'navy': '#000080', 
       'grey': '#808080', 'beige': '#f5f5dc', 'brown': '#a52a2a', 
-      'red': '#ff0000', 'blue': '#0000ff', 'green': '#008000'
+      'red': '#ff0000', 'blue': '#0000ff', 'green': '#008000',
+      'khaki': '#c3b091', 'olive': '#808000', 'navy/white': '#182746'
     };
     return colors[colorName.toLowerCase()] || '#cccccc';
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 md:py-16 max-w-[1400px]">
+    <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-8 md:py-12 max-w-[1400px]">
       
       {/* Breadcrumbs */}
       <nav className="flex text-[11px] uppercase tracking-widest text-muted-foreground font-semibold mb-8">
@@ -367,10 +446,10 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
         <span className="text-foreground">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
         
         {/* LEFT: Image Gallery */}
-        <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-4 lg:gap-6 items-start">
+        <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-4 items-start">
           
           {/* Thumbnails */}
           {product.images && product.images.length > 1 && (
@@ -379,14 +458,14 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
                 <button
                   key={img.id}
                   onClick={() => setSelectedImage(img.url)}
-                  className={`relative aspect-[3/4] w-20 md:w-full shrink-0 snap-start overflow-hidden transition-all ${
-                    selectedImage === img.url ? "border-b-2 border-foreground opacity-100" : "opacity-60 hover:opacity-100"
+                  className={`relative aspect-[3/4] w-20 md:w-full shrink-0 snap-start overflow-hidden transition-all bg-muted ${
+                    selectedImage === img.url ? "border-b-4 border-foreground opacity-100 ring-2 ring-foreground/10" : "opacity-60 hover:opacity-100 hover:border-b-4 hover:border-muted-foreground/50"
                   }`}
                 >
                   <img 
                     src={img.url.startsWith("http") ? img.url : `${env.NEXT_PUBLIC_API_URL.replace("/api/v1", "")}${img.url.startsWith("/") ? "" : "/"}${img.url}`} 
                     alt={img.altText || product.name} 
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-cover object-center" 
                   />
                 </button>
               ))}
@@ -394,7 +473,7 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
           )}
 
           {/* Main Image */}
-          <div className="relative aspect-[3/4] w-full bg-muted overflow-hidden flex-1 group">
+          <div className="relative aspect-[3/4] w-full bg-muted overflow-hidden flex-1 group md:sticky md:top-24">
             {selectedImage ? (
               <img 
                 src={selectedImage.startsWith("http") ? selectedImage : `${env.NEXT_PUBLIC_API_URL.replace("/api/v1", "")}${selectedImage.startsWith("/") ? "" : "/"}${selectedImage}`} 
@@ -406,36 +485,47 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
                 Image Unavailable
               </div>
             )}
+            
+            {/* Mobile Swipe Indicator */}
+            {product.images && product.images.length > 1 && (
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 md:hidden">
+                {product.images.map((img) => (
+                  <div key={img.id} className={`h-1 transition-all ${selectedImage === img.url ? 'w-6 bg-foreground' : 'w-2 bg-foreground/30'}`} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* RIGHT: Product Information (Sticky) */}
+        {/* RIGHT: Product Information */}
         <div className="lg:col-span-5">
-          <div className="sticky top-24">
+          <div className="md:sticky md:top-24">
             
             {/* Header */}
             <div className="mb-8">
               <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                {product.category?.name || 'Cartify Premium'}
+                {product.brand || product.category?.name || 'Cartify Premium'}
               </p>
-              <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase leading-none mb-4">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter uppercase leading-[1.1] mb-4">
                 {product.name}
               </h1>
               
-              <div className="flex items-center gap-3 mt-4">
+              <div className="flex items-end gap-3 mt-4">
                 <span className="text-2xl font-bold text-foreground">৳{displayPrice.toLocaleString()}</span>
                 {displayComparePrice && (
-                  <span className="text-lg text-muted-foreground line-through">
+                  <span className="text-lg text-muted-foreground line-through mb-0.5">
                     ৳{displayComparePrice.toLocaleString()}
                   </span>
                 )}
                 {displayComparePrice && (
-                  <span className="ml-2 text-xs font-bold uppercase tracking-widest text-destructive bg-destructive/10 px-2 py-1">
+                  <span className="ml-2 text-xs font-bold uppercase tracking-widest text-destructive bg-destructive/10 px-2 py-1 mb-1">
                     Save {Math.round(((displayComparePrice - displayPrice) / displayComparePrice) * 100)}%
                   </span>
                 )}
               </div>
             </div>
+
+            <div className="w-full h-px bg-border/60 mb-8" />
 
             {hasVariants ? (
               <div className="space-y-8 mb-10">
@@ -449,18 +539,18 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
                     </div>
                     <div className="flex flex-wrap gap-3">
                       {availableColors.map((color) => {
-                        const isSelected = selectedColor === color;
-                        return (
+                         const isSelected = selectedColor === color;
+                         return (
                           <button
                             key={color}
                             onClick={() => setSelectedColor(color)}
                             title={color}
-                            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                              isSelected ? "ring-1 ring-offset-2 ring-foreground" : "ring-1 ring-border hover:ring-muted-foreground"
+                            className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                              isSelected ? "ring-2 ring-offset-2 ring-foreground" : "ring-1 ring-border hover:ring-muted-foreground/50"
                             }`}
                           >
                             <span 
-                              className="w-full h-full rounded-full border border-black/10"
+                              className="w-[85%] h-[85%] rounded-full border border-black/10 shadow-sm"
                               style={{ backgroundColor: getColorHex(color) }} 
                             />
                           </button>
@@ -474,14 +564,14 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
                 {allSizes.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className={`text-xs font-bold uppercase tracking-widest ${sizeError ? 'text-destructive animate-pulse' : 'text-foreground'}`}>
-                        Size {selectedSize ? <span className="text-muted-foreground font-normal ml-2">— {selectedSize}</span> : sizeError ? <span className="text-destructive font-normal ml-2">— Please select a size</span> : <span className="text-destructive font-normal ml-2">— Required</span>}
+                      <h3 className={`text-xs font-bold uppercase tracking-widest transition-colors ${sizeError ? 'text-destructive' : 'text-foreground'}`}>
+                        Size {selectedSize ? <span className="text-muted-foreground font-normal ml-2">— {selectedSize}</span> : sizeError ? <span className="text-destructive font-normal ml-2 animate-pulse">— Please select a size</span> : <span className="text-destructive font-normal ml-2 opacity-70">— Required</span>}
                       </h3>
-                      <button className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground underline underline-offset-4">
+                      <button className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors">
                         Size Guide
                       </button>
                     </div>
-                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5">
                       {allSizes.map((size) => {
                         const isAvailable = availableSizesForColor.includes(size);
                         const isSelected = selectedSize === size;
@@ -496,15 +586,23 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
                               }
                             }}
                             disabled={!isAvailable}
-                            className={`flex items-center justify-center h-12 text-sm font-medium transition-all border ${
+                            className={`flex items-center justify-center h-12 text-sm font-semibold transition-all border relative overflow-hidden ${
                               isSelected
-                                ? "border-foreground bg-foreground text-background"
+                                ? "border-foreground bg-foreground text-background shadow-md scale-105 z-10"
                                 : isAvailable
-                                ? sizeError ? "border-destructive/50 bg-destructive/5 hover:border-destructive hover:bg-destructive/10" : "border-input bg-background hover:border-foreground/50 hover:bg-accent"
-                                : "border-muted bg-muted/30 text-muted-foreground cursor-not-allowed line-through decoration-muted-foreground/30"
+                                ? sizeError 
+                                  ? "border-destructive bg-destructive/5 hover:bg-destructive/10 text-destructive-foreground" 
+                                  : "border-input bg-background hover:border-foreground/50 hover:bg-accent hover:shadow-sm"
+                                : "border-muted bg-muted/40 text-muted-foreground cursor-not-allowed opacity-60"
                             }`}
                           >
                             {size}
+                            {/* Strikethrough for unavailable sizes */}
+                            {!isAvailable && (
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50">
+                                <div className="w-full h-[1px] bg-foreground rotate-[-25deg] transform origin-center"></div>
+                              </div>
+                            )}
                           </button>
                         );
                       })}
@@ -512,50 +610,47 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
                   </div>
                 )}
 
-                {/* SKU & Stock Info */}
-                {selectedVariant && (
-                  <div className="pt-6 border-t border-border/50 text-[11px] font-semibold uppercase tracking-widest flex flex-col gap-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">SKU</span>
-                      <span className="text-foreground">{selectedVariant.sku}</span>
+                {/* Quantity & Stock */}
+                <div className="flex flex-col sm:flex-row sm:items-end gap-6 justify-between pt-2">
+                  <div className="flex-1">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-3">Quantity</h3>
+                    <div className="inline-flex items-center border border-input h-12 w-full max-w-[160px]">
+                      <button
+                        className="px-4 h-full flex items-center justify-center hover:bg-accent transition-colors disabled:opacity-50 text-foreground"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        disabled={quantity <= 1 || !inStock || !selectedVariant}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+                      <div className="flex-1 text-center text-sm font-semibold text-foreground">
+                        {quantity}
+                      </div>
+                      <button
+                        className="px-4 h-full flex items-center justify-center hover:bg-accent transition-colors disabled:opacity-50 text-foreground"
+                        onClick={() => setQuantity(Math.min(stock, quantity + 1))}
+                        disabled={quantity >= stock || !inStock || !selectedVariant}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Availability</span>
-                      <span className={inStock ? "text-primary" : "text-destructive"}>
-                        {inStock ? `${stock} in stock` : "Out of stock"}
+                  </div>
+                  
+                  {selectedVariant && (
+                    <div className="text-right flex flex-col justify-end">
+                      <span className={`text-xs font-bold uppercase tracking-widest ${inStock ? 'text-primary' : 'text-destructive'}`}>
+                        {inStock ? `${stock} in stock` : 'Out of stock'}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">
+                        SKU: {selectedVariant.sku}
                       </span>
                     </div>
-                  </div>
-                )}
-
-                {/* Quantity */}
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-3">Quantity</h3>
-                  <div className="inline-flex items-center border border-input h-12">
-                    <button
-                      className="px-4 h-full flex items-center justify-center hover:bg-accent transition-colors disabled:opacity-50"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1 || !inStock || !selectedVariant}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <div className="w-12 text-center text-sm font-semibold">
-                      {quantity}
-                    </div>
-                    <button
-                      className="px-4 h-full flex items-center justify-center hover:bg-accent transition-colors disabled:opacity-50"
-                      onClick={() => setQuantity(Math.min(stock, quantity + 1))}
-                      disabled={quantity >= stock || !inStock || !selectedVariant}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
+                  )}
                 </div>
 
               </div>
             ) : (
-              <div className="mb-10 py-4 text-sm font-medium text-destructive border-y border-border/50">
-                This product is currently unavailable (no variants configured).
+              <div className="mb-10 py-6 text-sm font-semibold text-destructive text-center border border-destructive/20 bg-destructive/5 rounded-sm">
+                This product is currently unavailable.
               </div>
             )}
 
@@ -563,24 +658,28 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
             <div className="flex gap-4 mb-10">
               <Button 
                 size="lg" 
-                className={`flex-1 rounded-none h-14 uppercase tracking-widest font-bold text-xs group transition-all ${sizeError ? 'ring-2 ring-destructive ring-offset-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground' : ''}`}
-                disabled={(!selectedVariant && !allSizes.length) || !inStock}
+                className={`flex-1 rounded-none h-14 uppercase tracking-widest font-bold text-xs md:text-sm group transition-all ${sizeError ? 'ring-2 ring-destructive ring-offset-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground shadow-md' : 'shadow-sm'}`}
+                disabled={(!selectedVariant && !allSizes.length) || !inStock || isAddingToCart}
                 onClick={handleAddToCart}
               >
-                <ShoppingBag className={`mr-2 h-4 w-4 ${sizeError ? 'animate-bounce' : 'group-active:scale-90 transition-transform'}`} />
-                {sizeError ? "Select Size First" : inStock ? "Add to Cart" : "Out of Stock"}
+                {isAddingToCart ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  <ShoppingBag className={`mr-3 h-5 w-5 ${sizeError ? 'animate-bounce' : 'group-active:scale-95 transition-transform'}`} />
+                )}
+                {sizeError ? "Select Size First" : isAddingToCart ? "Adding..." : inStock ? "Add to Cart" : "Out of Stock"}
               </Button>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className={`w-14 rounded-none h-14 border-2 transition-colors ${isWishlisted ? 'text-destructive border-destructive bg-destructive/5' : 'text-foreground border-input'}`} 
+                className={`w-14 shrink-0 rounded-none h-14 border-2 transition-all ${isWishlisted ? 'text-destructive border-destructive bg-destructive/5' : 'text-foreground border-input hover:border-foreground/50 hover:bg-accent'}`} 
                 onClick={handleWishlistClick}
                 disabled={toggleWishlistMutation.isPending}
               >
                 {toggleWishlistMutation.isPending ? (
                   <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                 ) : (
-                  <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-destructive' : ''}`} />
+                  <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-destructive' : ''} group-active:scale-90 transition-transform`} />
                 )}
                 <span className="sr-only">{isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}</span>
               </Button>
@@ -591,28 +690,28 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
               {/* Description */}
               <div className="border-b border-border">
                 <button 
-                  className="w-full flex items-center justify-between py-5 text-left focus:outline-none"
+                  className="w-full flex items-center justify-between py-5 text-left focus:outline-none group"
                   onClick={() => setOpenAccordion(openAccordion === 'description' ? null : 'description')}
                 >
-                  <span className="text-xs font-bold uppercase tracking-widest">Product Details</span>
-                  {openAccordion === 'description' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  <span className="text-xs font-bold uppercase tracking-widest group-hover:text-primary transition-colors">Product Details</span>
+                  {openAccordion === 'description' ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openAccordion === 'description' ? 'max-h-[500px] opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed md:text-base">{product.description}</p>
                 </div>
               </div>
               
               {/* Shipping */}
               <div className="border-b border-border">
                 <button 
-                  className="w-full flex items-center justify-between py-5 text-left focus:outline-none"
+                  className="w-full flex items-center justify-between py-5 text-left focus:outline-none group"
                   onClick={() => setOpenAccordion(openAccordion === 'shipping' ? null : 'shipping')}
                 >
-                  <span className="text-xs font-bold uppercase tracking-widest">Shipping & Returns</span>
-                  {openAccordion === 'shipping' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  <span className="text-xs font-bold uppercase tracking-widest group-hover:text-primary transition-colors">Shipping & Returns</span>
+                  {openAccordion === 'shipping' ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openAccordion === 'shipping' ? 'max-h-[500px] opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
-                  <ul className="text-sm text-muted-foreground leading-relaxed space-y-2 list-disc pl-4">
+                  <ul className="text-sm text-muted-foreground leading-relaxed space-y-3 list-disc pl-4 md:text-base">
                     <li>Complimentary shipping on orders over ৳5000.</li>
                     <li>Delivery within 2-3 business days inside Dhaka, 3-5 days outside.</li>
                     <li>14-day return policy for unused items in original packaging.</li>
@@ -623,14 +722,15 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
               {/* Materials */}
               <div className="border-b border-border">
                 <button 
-                  className="w-full flex items-center justify-between py-5 text-left focus:outline-none"
+                  className="w-full flex items-center justify-between py-5 text-left focus:outline-none group"
                   onClick={() => setOpenAccordion(openAccordion === 'materials' ? null : 'materials')}
                 >
-                  <span className="text-xs font-bold uppercase tracking-widest">Materials & Care</span>
-                  {openAccordion === 'materials' ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  <span className="text-xs font-bold uppercase tracking-widest group-hover:text-primary transition-colors">Materials & Care</span>
+                  {openAccordion === 'materials' ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openAccordion === 'materials' ? 'max-h-[500px] opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed md:text-base">
+                    {product.material ? `Made from premium ${product.material.toLowerCase()}. ` : ''}
                     Designed for longevity. Machine wash cold with like colors. Do not bleach. Tumble dry low or hang to dry to preserve fabric integrity.
                   </p>
                 </div>
@@ -641,6 +741,8 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
         </div>
       </div>
 
+      <RelatedProducts categoryId={product.categoryId} currentProductId={product.id} />
+      
       <ReviewsSection productId={product.id} />
     </div>
   );

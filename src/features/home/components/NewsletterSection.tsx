@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 export function NewsletterSection() {
   return (
     <section className="py-20 bg-muted/10 border-t border-border/50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-xl text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">Cartify Insider</p>
           <h2 className="text-3xl font-black tracking-tighter uppercase mb-6">Stay in the loop</h2>

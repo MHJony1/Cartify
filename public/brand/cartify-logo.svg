@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none">
+  <!-- Monogram -->
+  <g transform="translate(0, 0)">
+    <path d="M42 20H32C23.1634 20 16 27.1634 16 36C16 44.8366 23.1634 52 32 52H42" stroke="#111111" stroke-width="6" stroke-linecap="square"/>
+    <path d="M28 12H48V18H34V30H44V36H34V46H28V12Z" fill="#111111"/>
+    <rect x="42" y="12" width="6" height="6" fill="#D4AF37"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="68" y="44" font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.1em" fill="#111111">CARTIFY</text>
+</svg>

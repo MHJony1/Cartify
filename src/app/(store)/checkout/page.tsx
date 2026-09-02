@@ -168,7 +168,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 md:py-20 max-w-7xl">
+    <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-12 md:py-20 max-w-7xl">
       <h1 className="text-3xl font-bold tracking-tight uppercase mb-12 border-b border-border/40 pb-6">Secure Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">

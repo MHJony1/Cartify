@@ -42,17 +42,19 @@ export function MiniCart() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger render={
-        <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
-          <ShoppingBag className="h-5 w-5" />
-          {mounted && totalCartItems > 0 && (
-            <Badge variant="default" className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px] bg-primary text-primary-foreground border-background border-2 font-bold shadow-sm">
-              {totalCartItems}
-            </Badge>
-          )}
-          <span className="sr-only">Cart</span>
-        </Button>
+        <button className="flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground group/icon cursor-pointer focus:outline-none bg-transparent border-0 p-0">
+          <div className="relative flex items-center justify-center">
+            <ShoppingBag className="h-5 w-5 group-hover/icon:scale-110 transition-transform" strokeWidth={1.5} />
+            {mounted && totalCartItems > 0 && (
+              <Badge variant="destructive" className="absolute -top-1.5 -right-2 h-[18px] min-w-[18px] px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-rose-500 border-background border-2">
+                {totalCartItems}
+              </Badge>
+            )}
+          </div>
+          <span className="text-[11px] font-medium leading-none hidden sm:block">Bag</span>
+        </button>
       } />
-      <SheetContent side="right" className="w-full sm:w-[450px] p-0 flex flex-col border-l border-border bg-background shadow-2xl z-[60]">
+      <SheetContent side="right" showCloseButton={false} className="w-full sm:w-[450px] p-0 flex flex-col border-l border-border bg-background shadow-2xl z-[60]">
         
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-border/50">
@@ -78,14 +80,14 @@ export function MiniCart() {
             ))}
           </div>
         ) : cart.items.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-            <ShoppingBag className="h-12 w-12 text-muted-foreground/30 mb-6" />
-            <h3 className="text-lg font-semibold uppercase tracking-widest mb-2">Your Bag is Empty</h3>
-            <p className="text-sm text-muted-foreground max-w-[250px] mb-8">
+          <div className="flex-1 flex flex-col items-center justify-center p-10 text-center">
+            <ShoppingBag className="h-16 w-16 text-muted-foreground/20 mb-8" strokeWidth={1} />
+            <h3 className="text-base font-bold uppercase tracking-[0.15em] mb-3">Your Bag is Empty</h3>
+            <p className="text-[13px] text-muted-foreground max-w-[260px] mb-10 leading-relaxed">
               Discover pieces made for your everyday wardrobe.
             </p>
             <Button 
-              className="w-full uppercase tracking-widest text-xs h-12 rounded-none" 
+              className="w-full uppercase tracking-[0.1em] font-bold text-xs h-12 rounded-none transition-transform active:scale-[0.98]" 
               onClick={() => { setIsOpen(false); router.push('/shop'); }}
             >
               Explore Collection

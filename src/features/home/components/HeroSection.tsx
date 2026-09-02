@@ -17,7 +17,7 @@ export function HeroSection() {
       {/* Subtle overlay for text readability without darkening too much */}
       <div className="absolute inset-0 bg-black/20" />
       
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
         <p className="text-sm md:text-base font-semibold tracking-[0.2em] text-white/90 uppercase mb-4 drop-shadow-sm">
           Autumn / Winter Collection
         </p>

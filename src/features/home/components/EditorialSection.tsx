@@ -4,7 +4,7 @@ import Link from 'next/link';
 export function EditorialSection() {
   return (
     <section className="py-16 bg-background overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           <div className="lg:col-span-5 flex flex-col justify-center order-2 lg:order-1">
