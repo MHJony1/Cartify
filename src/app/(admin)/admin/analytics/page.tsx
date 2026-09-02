@@ -517,7 +517,7 @@ export default function AnalyticsPage() {
   const [period, setPeriod] = useState<Period>("30d");
 
   return (
-    <div className="space-y-8 pb-10 max-w-7xl mx-auto">
+    <div className="space-y-8 pb-10 max-w-[1400px] mx-auto">
       {/* Sticky Header */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border pb-4 pt-2 -mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>

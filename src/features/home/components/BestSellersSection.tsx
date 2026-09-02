@@ -23,7 +23,7 @@ export function BestSellersSection() {
 
   return (
     <section className="py-16 bg-background">
-      <div className="mx-auto w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 md:px-8">
         <div className="flex flex-col items-center mb-12 text-center">
           <h2 className="text-3xl font-black tracking-tighter uppercase">Trending Now</h2>
           <div className="h-px w-12 bg-foreground mt-6"></div>

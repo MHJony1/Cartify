@@ -40,7 +40,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
 
   if (isError || !order) {
     return (
-      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-12 max-w-4xl text-center">
+      <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-12 max-w-4xl text-center">
         <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
         <h2 className="text-2xl font-bold mb-2">Order Not Found</h2>
         <p className="text-muted-foreground mb-6">We couldn't find the order you're looking for.</p>
@@ -76,7 +76,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-8 md:py-12 max-w-5xl min-h-[60vh]">
+    <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-8 md:py-12 max-w-[1400px] min-h-[60vh]">
       <div className="mb-8">
         <Button variant="ghost" onClick={() => router.push("/orders")} className="mb-4 -ml-4 text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4 mr-2" />

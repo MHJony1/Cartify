@@ -23,7 +23,7 @@ export default function CartPage() {
 
   if (!mounted) {
     return (
-      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-16 flex justify-center min-h-[60vh] items-center">
+      <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-16 flex justify-center min-h-[60vh] items-center">
         <LoadingState />
       </div>
     );
@@ -65,7 +65,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-12 md:py-20 max-w-7xl">
+    <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-12 md:py-20 max-w-[1400px]">
       <div className="flex items-end justify-between mb-12 border-b border-border/40 pb-6">
         <h1 className="text-3xl font-bold tracking-tight uppercase">Shopping Bag</h1>
         <p className="text-muted-foreground font-medium">{cart.items.length} {cart.items.length === 1 ? 'Item' : 'Items'}</p>

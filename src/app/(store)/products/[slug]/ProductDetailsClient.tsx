@@ -380,7 +380,7 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
 
   if (isLoading) {
     return (
-      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-10 md:py-16 max-w-[1400px]">
+      <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-10 md:py-16 max-w-[1400px]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-4">
             <div className="flex md:flex-col gap-3 overflow-x-auto w-full md:w-20 lg:w-24 shrink-0">
@@ -405,7 +405,7 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
 
   if (isError || !product) {
     return (
-      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-32 text-center max-w-2xl">
+      <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-32 text-center max-w-2xl">
         <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-6" />
         <h2 className="text-3xl font-black tracking-tighter uppercase mb-4">Product Not Found</h2>
         <p className="text-muted-foreground mb-8">The product you are looking for does not exist or has been removed from our catalog.</p>
@@ -435,7 +435,7 @@ export function ProductDetailsClient({ slug, initialData }: { slug: string, init
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-8 md:py-12 max-w-[1400px]">
+    <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-8 md:py-12 max-w-[1400px]">
       
       {/* Breadcrumbs */}
       <nav className="flex text-[11px] uppercase tracking-widest text-muted-foreground font-semibold mb-8">

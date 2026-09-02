@@ -22,7 +22,7 @@ export function AccountLayout({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-12 md:py-20 max-w-6xl min-h-[60vh] flex items-center justify-center">
+      <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-12 md:py-20 max-w-[1400px] min-h-[60vh] flex items-center justify-center">
         <LoadingState />
       </div>
     );
@@ -31,7 +31,7 @@ export function AccountLayout({ children }: { children: React.ReactNode }) {
   if (!user) return null; // Let proxy handle redirect
 
   return (
-    <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-12 md:py-20 max-w-6xl min-h-[70vh]">
+    <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-12 md:py-20 max-w-[1400px] min-h-[70vh]">
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
         
         {/* Sidebar Navigation */}

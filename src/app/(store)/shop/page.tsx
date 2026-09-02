@@ -195,7 +195,7 @@ function ShopContent() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 max-w-[1400px]">
+    <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 md:px-8 py-10 md:py-16 max-w-[1400px]">
       
       {/* Page Header */}
       <div className="mb-10 text-center md:text-left">
@@ -355,7 +355,7 @@ function ShopContent() {
 export default function ShopPage() {
   return (
     <Suspense fallback={
-      <div className="mx-auto w-full max-w-7xl mx-auto px-4 py-24 text-center">
+      <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 py-24 text-center">
         <Skeleton className="h-10 w-64 mx-auto mb-8" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {[...Array(8)].map((_, i) => <Skeleton key={i} className="aspect-[3/4] w-full" />)}

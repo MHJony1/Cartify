@@ -77,7 +77,7 @@ export default function AdminUserDetailsPage({ params }: UserDetailsPageProps) {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 max-w-5xl mx-auto">
+      <div className="space-y-6 max-w-[1400px] mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" disabled>
             <ArrowLeft className="w-5 h-5" />
@@ -99,7 +99,7 @@ export default function AdminUserDetailsPage({ params }: UserDetailsPageProps) {
 
   if (isError || !user) {
     return (
-      <div className="space-y-6 max-w-5xl mx-auto text-center py-20 bg-background rounded-lg border border-border">
+      <div className="space-y-6 max-w-[1400px] mx-auto text-center py-20 bg-background rounded-lg border border-border">
         <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
         <h2 className="text-2xl font-bold">User Not Found</h2>
         <p className="text-muted-foreground mb-6">This user doesn't exist or has been permanently deleted.</p>
@@ -109,7 +109,7 @@ export default function AdminUserDetailsPage({ params }: UserDetailsPageProps) {
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-[1400px] mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => router.push("/admin/users")}>
