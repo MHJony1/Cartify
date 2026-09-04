@@ -312,7 +312,7 @@ export function ProductForm({ initialData, onSuccess, onCancel }: ProductFormPro
         sku: `SKU-${labelParts.join('-').toUpperCase()}`,
         price: Number(basePrice),
         stock: 0,
-        compareAtPrice: ""
+        compareAtPrice: undefined
       };
     });
 
