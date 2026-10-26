@@ -21,18 +21,12 @@ export function FeaturedProductsSection() {
   });
 
   return (
-    <section className="py-16 bg-muted/30 border-y border-border/50">
+    <section className="py-10 md:py-16 lg:py-20 bg-muted/30 border-y border-border/50">
       <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 md:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
-          <div>
-            <h2 className="text-3xl font-black tracking-tighter uppercase">New Arrivals</h2>
-            <p className="mt-2 text-muted-foreground">The latest pieces to refresh your wardrobe.</p>
-          </div>
-          <Link href="/categories/new-arrivals" className="hidden md:block">
-            <Button variant="outline" className="rounded-none uppercase tracking-widest text-xs font-semibold px-6 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors">
-              View All
-            </Button>
-          </Link>
+        <div className="flex flex-col items-center mb-10 md:mb-14 text-center">
+          <h2 className="text-3xl md:text-4xl font-black tracking-tighter uppercase">New Arrivals</h2>
+          <p className="mt-3 text-muted-foreground text-sm font-medium tracking-wide">The latest pieces to refresh your wardrobe.</p>
+          <div className="h-px w-12 bg-foreground mt-6"></div>
         </div>
 
         {/* Prevent hydration mismatch */}
@@ -65,9 +59,9 @@ export function FeaturedProductsSection() {
           </div>
         )}
 
-        <div className="mt-12 text-center md:hidden">
+        <div className="mt-12 md:mt-16 text-center">
           <Link href="/categories/new-arrivals">
-            <Button variant="outline" className="w-full rounded-none uppercase tracking-widest text-xs font-semibold px-6 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors">
+            <Button variant="outline" className="w-full md:w-auto rounded-none uppercase tracking-widest text-xs font-semibold px-10 h-12 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors">
               View All New Arrivals
             </Button>
           </Link>

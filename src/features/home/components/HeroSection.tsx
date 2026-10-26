@@ -44,7 +44,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative w-full h-[calc(100dvh-110px)] min-h-[600px] mt-[110px] bg-background overflow-hidden group">
+    <section className="relative w-full h-[calc(100dvh-110px)] min-h-[400px] lg:min-h-[600px] mt-[110px] bg-background overflow-hidden group">
       <Swiper
         modules={SWIPER_MODULES}
         effect="fade"
@@ -75,14 +75,14 @@ export function HeroSection() {
             <div className="relative z-20 w-full max-w-7xl mx-auto h-full px-6 sm:px-8 lg:px-12 flex flex-col justify-center items-start pointer-events-none">
               <div className="max-w-xl pointer-events-auto">
                 <div className="opacity-0 select-none" aria-hidden="true">
-                  <p className="text-xs md:text-sm font-semibold tracking-[0.2em] text-white/90 uppercase mb-2 md:mb-3">
+                  <p className="text-[10px] md:text-xs lg:text-sm font-semibold tracking-[0.2em] text-white/90 uppercase mb-2 md:mb-3">
                     THE CARTIFY EDIT
                   </p>
-                  <h2 className="text-4xl sm:text-6xl md:text-7xl font-light tracking-tight text-white uppercase leading-[1.1] mb-3 md:mb-4">
+                  <h2 className="text-3xl md:text-5xl lg:text-7xl font-light tracking-tight text-white uppercase leading-[1.1] mb-3 md:mb-4">
                     ELEVATED<br />
                     <span className="font-semibold">ESSENTIALS</span>
                   </h2>
-                  <p className="text-base md:text-lg text-white/90 font-light mb-4 md:mb-5 max-w-md">
+                  <p className="text-sm md:text-base lg:text-lg text-white/90 font-light mb-4 md:mb-5 max-w-md">
                     Timeless pieces. Modern design. Crafted for the way you live.
                   </p>
                 </div>
@@ -102,27 +102,41 @@ export function HeroSection() {
         {/* SLIDE 03 - GRID */}
         <SwiperSlide className="bg-background">
           <div className="relative w-full h-full bg-background">
-            <Image
-              src="/images/Cartify_hero_2.png"
-              alt="Cartify Collections Grid"
-              fill
-              className="object-cover object-top"
-            />
-            {/* Interactive Grid Map Overlay */}
-            <div className="absolute inset-0 z-20">
-              {/* MEN - Left Half */}
-              <Link href="/categories/men" className="absolute top-0 left-0 w-[50%] h-[66.66%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Men's Collection" />
-              {/* WOMEN - Top Right */}
-              <Link href="/categories/women" className="absolute top-0 left-[50%] w-[50%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Women's Collection" />
-              {/* KIDS - Mid Right */}
-              <Link href="/categories/kids" className="absolute top-[33.33%] left-[50%] w-[50%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Kids Collection" />
-              {/* ACCESSORIES - Bottom Left */}
-              <Link href="/shop?search=accessories" className="absolute top-[66.66%] left-0 w-[33.33%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Accessories" />
-              {/* NEW IN - Bottom Mid */}
-              <Link href="/shop?sort=new" className="absolute top-[66.66%] left-[33.33%] w-[33.33%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop New Arrivals" />
-              {/* SALE - Bottom Right */}
-              <Link href="/shop?sale=true" className="absolute top-[66.66%] left-[66.66%] w-[33.33%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Sale Items" />
+            
+            {/* Desktop View (lg and up) */}
+            <div className="hidden lg:block relative w-full h-full">
+              <Image
+                src="/images/Cartify_hero_2.png"
+                alt="Cartify Collections Grid"
+                fill
+                className="object-cover object-top"
+              />
+              <div className="absolute inset-0 z-20">
+                {/* MEN - Left Half */}
+                <Link href="/categories/men" className="absolute top-0 left-0 w-[50%] h-[66.66%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Men's Collection" />
+                {/* WOMEN - Top Right */}
+                <Link href="/categories/women" className="absolute top-0 left-[50%] w-[50%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Women's Collection" />
+                {/* KIDS - Mid Right */}
+                <Link href="/categories/kids" className="absolute top-[33.33%] left-[50%] w-[50%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Kids Collection" />
+                {/* ACCESSORIES - Bottom Left */}
+                <Link href="/shop?search=accessories" className="absolute top-[66.66%] left-0 w-[33.33%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Accessories" />
+                {/* NEW IN - Bottom Mid */}
+                <Link href="/shop?sort=new" className="absolute top-[66.66%] left-[33.33%] w-[33.33%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop New Arrivals" />
+                {/* SALE - Bottom Right */}
+                <Link href="/shop?sale=true" className="absolute top-[66.66%] left-[66.66%] w-[33.33%] h-[33.33%] hover:bg-black/10 transition-colors duration-300" aria-label="Shop Sale Items" />
+              </div>
             </div>
+
+            {/* Mobile View (Below lg) */}
+            <div className="lg:hidden absolute inset-0 z-20 grid grid-cols-2 grid-rows-3 gap-1 p-1 bg-background">
+              <Link href="/categories/men" className="relative block w-full h-full bg-[url('/images/Cartify_hero_2.png')] bg-[size:200%_300%] bg-[position:0%_0%] bg-no-repeat rounded-sm hover:opacity-90 transition-opacity" aria-label="Shop Men's Collection" />
+              <Link href="/categories/women" className="relative block w-full h-full bg-[url('/images/Cartify_hero_2.png')] bg-[size:200%_300%] bg-[position:100%_0%] bg-no-repeat rounded-sm hover:opacity-90 transition-opacity" aria-label="Shop Women's Collection" />
+              <Link href="/categories/kids" className="relative block w-full h-full bg-[url('/images/Cartify_hero_2.png')] bg-[size:200%_300%] bg-[position:100%_50%] bg-no-repeat rounded-sm hover:opacity-90 transition-opacity" aria-label="Shop Kids Collection" />
+              <Link href="/shop?search=accessories" className="relative block w-full h-full bg-[url('/images/Cartify_hero_2.png')] bg-[size:300%_300%] bg-[position:0%_100%] bg-no-repeat rounded-sm hover:opacity-90 transition-opacity" aria-label="Shop Accessories" />
+              <Link href="/shop?sort=new" className="relative block w-full h-full bg-[url('/images/Cartify_hero_2.png')] bg-[size:300%_300%] bg-[position:50%_100%] bg-no-repeat rounded-sm hover:opacity-90 transition-opacity" aria-label="Shop New Arrivals" />
+              <Link href="/shop?sale=true" className="relative block w-full h-full bg-[url('/images/Cartify_hero_2.png')] bg-[size:300%_300%] bg-[position:100%_100%] bg-no-repeat rounded-sm hover:opacity-90 transition-opacity" aria-label="Shop Sale Items" />
+            </div>
+
           </div>
         </SwiperSlide>
       </Swiper>

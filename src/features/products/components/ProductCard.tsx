@@ -98,39 +98,38 @@ export function ProductCard({
   return (
     <div className="group relative flex flex-col w-full h-full">
       {/* Image Container */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted mb-4 rounded-sm">
-        <Link href={productLink} className="block w-full h-full">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted mb-5 rounded-md transition-shadow duration-500 group-hover:shadow-lg">
+        <Link href={productLink} className="block w-full h-full relative">
           {/* Primary Image */}
           <div 
-            className="absolute inset-0 bg-cover bg-center transition-opacity duration-700 ease-in-out opacity-100 group-hover:opacity-0"
+            className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-out opacity-100 group-hover:opacity-0 group-hover:scale-105"
             style={{ backgroundImage: `url(${displayImage1})` }}
           />
           {/* Hover Image */}
           <div 
-            className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100 group-hover:scale-105"
+            className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-out opacity-0 scale-100 group-hover:opacity-100 group-hover:scale-105"
             style={{ backgroundImage: `url(${displayImage2})` }}
           />
         </Link>
         
-        {/* Badges */}
-        <div className="absolute left-2 top-2 flex flex-col gap-1 pointer-events-none z-10">
+        <div className="absolute left-3 top-3 flex flex-col gap-1.5 pointer-events-none z-10">
           {isNew && (
-            <Badge className="bg-primary text-primary-foreground uppercase tracking-widest text-[10px] font-bold rounded-none px-2 py-0.5">New</Badge>
+            <Badge className="bg-primary text-primary-foreground uppercase tracking-widest text-[9px] font-bold rounded-sm px-2 py-0.5 shadow-sm">New</Badge>
           )}
           {discount > 0 && (
-            <Badge variant="destructive" className="uppercase tracking-widest text-[10px] font-bold rounded-none px-2 py-0.5 bg-red-600">
+            <Badge variant="destructive" className="uppercase tracking-widest text-[9px] font-bold rounded-sm px-2 py-0.5 bg-rose-600 shadow-sm">
               -{discount}%
             </Badge>
           )}
           {badge && (
-            <Badge variant="secondary" className="uppercase tracking-widest text-[10px] font-bold rounded-none px-2 py-0.5">
+            <Badge variant="secondary" className="uppercase tracking-widest text-[9px] font-bold rounded-sm px-2 py-0.5 shadow-sm">
               {badge}
             </Badge>
           )}
         </div>
 
         {/* Wishlist Button */}
-        <div className={`absolute right-2 top-2 z-10 transition-opacity duration-300 ${isWishlisted || toggleWishlistMutation.isPending ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+        <div className={`absolute right-3 top-3 z-10 transition-opacity duration-300 ${isWishlisted || toggleWishlistMutation.isPending ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
           <Button 
             variant="secondary" 
             size="icon" 
@@ -150,8 +149,8 @@ export function ProductCard({
 
       {/* Product Details */}
       <div className="flex flex-col flex-1 px-1">
-        <Link href={productLink} className="block mb-1">
-          <h3 className="text-sm font-semibold text-foreground tracking-tight line-clamp-1 group-hover:underline underline-offset-4 decoration-1">
+        <Link href={productLink} className="block mb-1.5">
+          <h3 className="text-[13px] font-semibold text-foreground tracking-tight line-clamp-1 group-hover:text-rose-600 transition-colors">
             {name}
           </h3>
         </Link>

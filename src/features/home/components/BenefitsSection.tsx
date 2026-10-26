@@ -26,7 +26,7 @@ const BENEFITS = [
 
 export function BenefitsSection() {
   return (
-    <section className="border-t border-border/50 bg-background py-16">
+    <section className="border-t border-border/50 bg-background py-10 md:py-16 lg:py-20">
       <div className="mx-auto w-full max-w-[1400px] mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {BENEFITS.map((benefit, index) => (
@@ -34,8 +34,8 @@ export function BenefitsSection() {
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-muted text-foreground">
                 {benefit.icon}
               </div>
-              <h3 className="mb-2 text-sm font-semibold uppercase tracking-widest text-foreground">{benefit.title}</h3>
-              <p className="text-sm text-muted-foreground">{benefit.description}</p>
+              <h3 className="mb-2 text-[13px] font-bold uppercase tracking-[0.15em] text-foreground">{benefit.title}</h3>
+              <p className="text-sm text-muted-foreground font-medium">{benefit.description}</p>
             </div>
           ))}
         </div>

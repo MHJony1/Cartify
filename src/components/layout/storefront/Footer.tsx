@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="bg-background border-t border-border pt-12 pb-8 mt-auto">
+    <footer className="bg-background border-t border-border pt-16 md:pt-24 pb-8 mt-auto">
       <div className="mx-auto w-full max-w-[1400px] px-4 md:px-8">
         
         {/* Top Section: Brand Statement */}
